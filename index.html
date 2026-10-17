@@ -67,8 +67,6 @@
   .status-badge.broken { background:var(--broken-bg); color:var(--broken-text); }
   .broken-notice { background:var(--broken-bg); border:1px solid var(--broken-border); border-radius:12px; padding:12px; margin-bottom:14px; color:var(--broken-text); font-size:14px; }
   .broken-notice strong { display:block; margin-bottom:4px; }
-
-  /* Лента времени */
   .tlbar-wrap { margin-bottom:14px; }
   .tlbar-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-bottom:4px; font-variant-numeric:tabular-nums; }
   .tlbar { position:relative; height:26px; background:var(--free-bg); border:1px solid var(--free-border); border-radius:8px; overflow:hidden; }
@@ -78,7 +76,6 @@
   .tlbar-seg.s-active { background:var(--active-text); }
   .tlbar-seg.s-future { background:var(--busy-text); }
   .tlbar-seg.s-past { background:var(--past-text); opacity:.6; }
-
   .timeline { background:var(--input-bg); border-radius:12px; padding:12px; margin-bottom:14px; max-height:200px; overflow-y:auto; }
   .timeline-title { font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px; }
   .timeline-item { display:flex; align-items:center; padding:8px; border-radius:8px; margin-bottom:6px; font-size:14px; gap:8px; flex-wrap:wrap; }
@@ -96,7 +93,6 @@
   .btn-cancel-small { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
   .btn-book { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; }
   .btn-book:disabled { background:var(--past-bg); color:var(--past-text); cursor:not-allowed; }
-
   .schedule-container { background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden; margin-bottom:20px; }
   .schedule-scroll { overflow:auto; max-height:600px; }
   .schedule-table { width:100%; min-width:500px; border-collapse:collapse; }
@@ -114,7 +110,6 @@
   .slot-btn.booked-future { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); }
   .slot-btn.booked-past { background:var(--past-bg); color:var(--past-text); border:1px solid var(--border); opacity:.6; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
-
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:1000; align-items:flex-end; justify-content:center; }
   .modal-overlay.active { display:flex; }
   @media (min-width:640px){ .modal-overlay{align-items:center} }
@@ -127,6 +122,14 @@
   .form-group { margin-bottom:16px; }
   .form-group label { display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
   .form-group input,.form-group select,.form-group textarea { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:10px; font-size:15px; background:var(--input-bg); color:var(--text); }
+  .quick-title { font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px; }
+  .quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px; }
+  .quick-btn { padding:8px 4px; border:1px solid var(--free-border); border-radius:8px; background:var(--free-bg); color:var(--free-text); font-size:12px; font-weight:700; cursor:pointer; text-align:center; line-height:1.2; }
+  .quick-btn.now { background:var(--primary); color:#fff; border-color:var(--primary); }
+  .quick-btn small { display:block; font-size:9px; font-weight:600; opacity:.85; }
+  .free-window { font-size:13px; font-weight:600; padding:8px 12px; border-radius:8px; margin-bottom:12px; background:var(--input-bg); color:var(--text); border:1px solid var(--border); }
+  .free-window.bad { background:var(--busy-bg); color:var(--busy-text); border-color:var(--busy-border); }
+  .free-window.empty { background:var(--past-bg); color:var(--past-text); }
   .duration-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
   .duration-btn { padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); font-size:14px; font-weight:600; color:var(--text); cursor:pointer; }
   .duration-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
@@ -136,7 +139,6 @@
   body.dark .summary-box.ok { background:#312e81; border-color:#4338ca; color:#c7d2fe; }
   .btn-submit { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; margin-top:6px; }
   .btn-submit:disabled { background:var(--past-bg); color:var(--past-text); cursor:not-allowed; }
-
   .settings-panel { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:20px; }
   .settings-panel h3 { font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
   .settings-panel h4 { font-size:14px; font-weight:700; color:var(--text-secondary); margin:18px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
@@ -150,10 +152,8 @@
   .btn-reset { padding:12px 16px; background:var(--past-bg); color:var(--text); border:1px solid var(--border); border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
   .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--active-bg); color:var(--active-text); border:1px solid var(--active-border); padding:12px 20px; border-radius:12px; font-size:14px; font-weight:600; z-index:2000; display:none; box-shadow:0 4px 12px rgba(0,0,0,.15); }
   .toast.show { display:block; animation:slideUp .3s ease; }
-
-  /* Управление машинками */
   .machine-mgmt { display:grid; gap:10px; }
-  .machine-mgmt-row { display:grid; grid-template-columns:1fr 1fr auto auto; gap:8px; align-items:center; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:8px 10px; }
+  .machine-mgmt-row { display:grid; grid-template-columns:auto 1fr 1fr auto auto auto; gap:8px; align-items:center; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:8px 10px; }
   .machine-mgmt-row input[type=text] { padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:14px; }
   .machine-mgmt-row .mm-id { font-size:12px; font-weight:700; color:var(--text-secondary); min-width:28px; }
   .mm-toggle { font-size:12px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--border); cursor:pointer; background:var(--card); color:var(--text); white-space:nowrap; }
@@ -161,8 +161,6 @@
   .mm-del { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); padding:6px 10px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
   .add-machine-bar { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
   .add-machine-bar input { flex:1; min-width:120px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:14px; }
-
-  /* Список пользователей */
   .list-toolbar { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; display:grid; gap:12px; }
   .list-search-row { display:flex; gap:8px; }
   .list-search { flex:1; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--text); font-size:15px; }
@@ -232,10 +230,16 @@
       <div class="modal-title"><h3 id="modalMachineName">Бронирование</h3></div>
       <button class="modal-close" onclick="closeModal('bookModal')">×</button>
     </div>
+
+    <div class="quick-title t-quickTitle">Ближайшее свободное время</div>
+    <div class="quick-grid" id="quickSlots"></div>
+
     <div class="form-group">
       <label class="t-startTime">Время начала</label>
       <input type="time" id="bookTime" step="300">
     </div>
+    <div id="freeWindow" class="free-window" style="display:none;"></div>
+
     <div class="form-group">
       <label class="t-duration">Длительность</label>
       <div class="duration-grid" id="durationGrid">
@@ -272,7 +276,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-  import { getDatabase, ref, onValue, set, remove, push, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+  import { getDatabase, ref, onValue, set, remove, push, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB-MwonAjW0t-L42W6FiVEMuEn_qs-2K0M",
@@ -292,6 +296,7 @@
   const settingsRef = ref(db, 'settings');
   const machinesRef = ref(db, 'machines');
   const userRegistryRef = ref(db, 'userRegistry');
+  const deviceBindingsRef = ref(db, 'deviceBindings');
 
   const ADMIN_PASSWORD = 'admin123'; // ← поменяй на свой
 
@@ -305,10 +310,8 @@
   };
   let config = { ...DEFAULT_CONFIG };
 
-  // ===== XSS-защита =====
   const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-  // ===== ПЕРЕВОДЫ =====
   const i18n = {
     ru: {
       title:'Стиралки', subtitle:'Бронирование в общежитии', machines:'Машинки', schedule:'Сетка', admin:'Админ', list:'Список', settings:'Настройки',
@@ -318,11 +321,16 @@
       free:'Свободна', allDayFree:'Свободно весь день', scheduleTitle:'Расписание',
       active:'🔴 Идёт стирка', past:'✓ Завершено', future:'⏳ Будет', remaining:'осталось {n} мин',
       nextSlot:'Твоя следующая стирка', nextSlotIn:'через {n} мин', nextSlotNow:'прямо сейчас',
+      quickTitle:'Ближайшее свободное время', nowLabel:'▶ Сейчас',
+      freeUntil:'Свободно до {until} • максимум {max} мин',
+      tooLong:'⛔ Не влезает: свободно только {max} мин. Уменьши длительность.',
+      noFreeToday:'Сегодня свободных окон нет. Выбери другой день.',
       errName:'Укажи имя и фамилию', errTime:'Нельзя бронировать прошедшее время или более чем на {advance} часов вперёд!',
       errBusy:'Время уже занято!', errClosing:'Стирка закончится после закрытия ({close}:00). Выбери раньше или короче.',
       errLimit1:'Лимит: макс. {dailyMachines} разные машинки в день.', errLimit2:'Лимит: макс. {perMachineH} часа на одну машинку в день.',
       errCancel:'Отменить можно только свою бронь.', errNotAllowed:'❌ Вас нет в списке разрешённых. Обратитесь к коменданту.',
       errNameTaken:'⛔ Это имя уже закреплено за другим устройством. Обратись к админу, чтобы сбросить привязку.',
+      deviceBound:'🔒 Это устройство привязано к {name}. Для смены имени попроси админа сбросить привязку.',
       errWeeklyLimit:'⏰ Превышен лимит {weeklyH} часа в неделю. Использовано: {used} из {weekly} мин.',
       confirmCancel:'Отменить действие?', noSlots:'Нет доступных слотов.',
       machine:'Стиралка', floor:'этаж',
@@ -332,7 +340,7 @@
       weeklyLimit:'Осталось на неделю: {remaining} из {weekly} мин',
       weeklyLimitExceeded:'⚠️ Недельный лимит исчерпан!', closingWarning:'Закончится в {end} — после закрытия {close}:00',
       settingsTitle:'⚙️ Настройки системы', save:'Сохранить', saved:'✅ Настройки сохранены', resetDefaults:'Сбросить',
-      setOpen:'Открытие (час)', setClose:'Закрытие (час)',
+      setOpen:'Открытие (час)', setClose:'Закрытие (час)', setLimits:'Лимиты бронирования',
       setDailyMachines:'Макс. машинок в день', setPerMachine:'Макс. минут на одну машинку в день',
       setWeekly:'Недельный лимит (минут)', setAdvance:'За сколько часов можно бронировать вперёд', setCleanup:'Через сколько часов удалять прошедшие брони',
       machinesTitle:'🫧 Список машинок', addMachine:'+ Добавить машинку', machineNamePh:'Название', machineFloorPh:'Этаж',
@@ -342,8 +350,7 @@
       sortLasc:'Фамилия А-Я', sortLdesc:'Фамилия Я-А', sortAdded:'По дате добавления',
       all:'Все', noUsers:'Список пуст. Добавьте пользователей.', noMatch:'Ничего не найдено.',
       shownOf:'Показано {shown} из {total}', addNew:'+ Добавить', added:'✅ Пользователь добавлен', removed:'🗑️ Пользователь удалён',
-      addedOn:'добавлен', bound:'привязан', unbound:'не привязан', resetBind:'Сбросить привязку', bindReset:'✅ Привязка сброшена',
-      bindTo:'устройство'
+      addedOn:'добавлен', bound:'привязан', unbound:'не привязан', resetBind:'Сбросить привязку', bindReset:'✅ Привязка сброшена', bindTo:'устройство'
     },
     en: {
       title:'Laundry', subtitle:'Dormitory Booking', machines:'Machines', schedule:'Schedule', admin:'Admin', list:'Users', settings:'Settings',
@@ -353,11 +360,16 @@
       free:'Free', allDayFree:'Free all day', scheduleTitle:'Schedule',
       active:'🔴 In progress', past:'✓ Finished', future:'⏳ Upcoming', remaining:'{n} min left',
       nextSlot:'Your next wash', nextSlotIn:'in {n} min', nextSlotNow:'right now',
+      quickTitle:'Nearest free time', nowLabel:'▶ Now',
+      freeUntil:'Free until {until} • max {max} min',
+      tooLong:'⛔ Too long: only {max} min free. Reduce duration.',
+      noFreeToday:'No free slots today. Pick another day.',
       errName:'Enter first and last name', errTime:'Cannot book past time or >{advance}h ahead!',
       errBusy:'Slot already booked!', errClosing:'Wash would end after closing ({close}:00). Pick earlier or shorter.',
       errLimit1:'Limit: max {dailyMachines} different machines per day.', errLimit2:'Limit: max {perMachineH} hours per machine per day.',
       errCancel:'You can only cancel your own booking.', errNotAllowed:'❌ You are not in the allowed list. Contact the manager.',
       errNameTaken:'⛔ This name is already bound to another device. Ask admin to reset the binding.',
+      deviceBound:'🔒 This device is bound to {name}. Ask admin to reset to switch names.',
       errWeeklyLimit:'⏰ Weekly {weeklyH}h limit exceeded. Used: {used} of {weekly} min.',
       confirmCancel:'Confirm action?', noSlots:'No available slots.',
       machine:'Machine', floor:'floor',
@@ -367,7 +379,7 @@
       weeklyLimit:'Remaining this week: {remaining} of {weekly} min',
       weeklyLimitExceeded:'⚠️ Weekly limit exceeded!', closingWarning:'Ends at {end} — after {close}:00 closing',
       settingsTitle:'⚙️ System Settings', save:'Save', saved:'✅ Settings saved', resetDefaults:'Reset',
-      setOpen:'Open (hour)', setClose:'Close (hour)',
+      setOpen:'Open (hour)', setClose:'Close (hour)', setLimits:'Booking limits',
       setDailyMachines:'Max machines per day', setPerMachine:'Max minutes per machine per day',
       setWeekly:'Weekly limit (minutes)', setAdvance:'Max hours in advance', setCleanup:'Delete finished bookings after (hours)',
       machinesTitle:'🫧 Machine list', addMachine:'+ Add machine', machineNamePh:'Name', machineFloorPh:'Floor',
@@ -377,8 +389,7 @@
       sortLasc:'Last name A-Z', sortLdesc:'Last name Z-A', sortAdded:'By date added',
       all:'All', noUsers:'List is empty. Add users.', noMatch:'Nothing found.',
       shownOf:'Showing {shown} of {total}', addNew:'+ Add', added:'✅ User added', removed:'🗑️ User removed',
-      addedOn:'added', bound:'bound', unbound:'unbound', resetBind:'Reset binding', bindReset:'✅ Binding reset',
-      bindTo:'device'
+      addedOn:'added', bound:'bound', unbound:'unbound', resetBind:'Reset binding', bindReset:'✅ Binding reset', bindTo:'device'
     },
     zh: {
       title:'洗衣房', subtitle:'宿舍预约系统', machines:'洗衣机', schedule:'时间表', admin:'管理员', list:'用户', settings:'设置',
@@ -388,11 +399,16 @@
       free:'空闲', allDayFree:'全天空闲', scheduleTitle:'时间表',
       active:'🔴 进行中', past:'✓ 已结束', future:'⏳ 待开始', remaining:'剩余 {n} 分钟',
       nextSlot:'你的下一次洗衣', nextSlotIn:'{n} 分钟后', nextSlotNow:'现在',
+      quickTitle:'最近空闲时间', nowLabel:'▶ 现在',
+      freeUntil:'空闲至 {until} • 最多 {max} 分钟',
+      tooLong:'⛔ 太长：仅空闲 {max} 分钟，请缩短。',
+      noFreeToday:'今天没有空闲时段，请换一天。',
       errName:'请输入姓名', errTime:'无法预约过去时间或超过{advance}小时！',
       errBusy:'该时段已被预约！', errClosing:'洗衣将在{close}:00关门后结束，请选更早或更短。',
       errLimit1:'限制：每天最多{dailyMachines}台不同机器。', errLimit2:'限制：每台机器每天最多{perMachineH}小时。',
       errCancel:'只能取消自己的预约。', errNotAllowed:'❌ 您不在授权名单中，请联系管理员。',
       errNameTaken:'⛔ 该名字已绑定其他设备，请联系管理员解绑。',
+      deviceBound:'🔒 此设备已绑定 {name}，换名请联系管理员解绑。',
       errWeeklyLimit:'⏰ 超过每周{weeklyH}小时限制。已用：{used}/{weekly}分钟。',
       confirmCancel:'确认操作？', noSlots:'没有可用时段。',
       machine:'洗衣机', floor:'楼',
@@ -402,7 +418,7 @@
       weeklyLimit:'本周剩余：{remaining}/{weekly}分钟',
       weeklyLimitExceeded:'⚠️ 周限额已用完！', closingWarning:'将在 {end} 结束 — 超过{close}:00关门',
       settingsTitle:'⚙️ 系统设置', save:'保存', saved:'✅ 设置已保存', resetDefaults:'重置',
-      setOpen:'开门（时）', setClose:'关门（时）',
+      setOpen:'开门（时）', setClose:'关门（时）', setLimits:'预约限制',
       setDailyMachines:'每天最多机器数', setPerMachine:'每台机器每天最多分钟',
       setWeekly:'每周限额（分钟）', setAdvance:'最多提前几小时', setCleanup:'结束后几小时删除记录',
       machinesTitle:'🫧 机器列表', addMachine:'+ 添加机器', machineNamePh:'名称', machineFloorPh:'楼层',
@@ -412,8 +428,7 @@
       sortLasc:'姓 A-Z', sortLdesc:'姓 Z-A', sortAdded:'按添加时间',
       all:'全部', noUsers:'列表为空，请添加用户。', noMatch:'未找到。',
       shownOf:'显示 {shown}/{total}', addNew:'+ 添加', added:'✅ 用户已添加', removed:'🗑️ 用户已删除',
-      addedOn:'添加于', bound:'已绑定', unbound:'未绑定', resetBind:'解绑', bindReset:'✅ 已解绑',
-      bindTo:'设备'
+      addedOn:'添加于', bound:'已绑定', unbound:'未绑定', resetBind:'解绑', bindReset:'✅ 已解绑', bindTo:'设备'
     }
   };
 
@@ -438,7 +453,6 @@
     showToast._t = setTimeout(()=>el.classList.remove('show'), 2500);
   };
 
-  // ===== ТЕМА =====
   let isDark = localStorage.getItem('laundry_dark') === 'true';
   function applyTheme() {
     document.body.classList.toggle('dark', isDark);
@@ -447,10 +461,8 @@
   window.toggleTheme = () => { isDark=!isDark; localStorage.setItem('laundry_dark',isDark); applyTheme(); };
   applyTheme();
 
-  // ===== ДАННЫЕ =====
-  let bookings={}, machineStatuses={}, allowedUsers={}, userRegistry={};
-  let machinesList=[]; // [{id,name,floor,active}]
-  let machinesLoaded=false;
+  let bookings={}, machineStatuses={}, allowedUsers={}, userRegistry={}, deviceBindings={};
+  let machinesList=[]; let machinesLoaded=false;
   let currentView='machines';
   let selectedDate = new Date().toISOString().split('T')[0];
   let pendingBooking=null, selectedDuration=60;
@@ -462,7 +474,6 @@
     localStorage.setItem('laundry_device_id', deviceId);
   }
 
-  // ===== АДМИН =====
   let isAdmin = false;
   function applyAdminVisibility() {
     document.getElementById('btnList').style.display = isAdmin ? '' : 'none';
@@ -484,12 +495,21 @@
     } else alert(t('wrongPassword'));
   };
 
-  // ===== ВРЕМЯ =====
   const timeToMinutes = (tm)=>{const[h,m]=tm.split(':').map(Number);return h*60+m;};
   const minutesToTime = (mn)=>`${String(Math.floor(mn/60)).padStart(2,'0')}:${String(mn%60).padStart(2,'0')}`;
   const addMinutes = (tm,mn)=>minutesToTime(timeToMinutes(tm)+mn);
   const closingMinutes = ()=>config.closeHour*60;
   const openingMinutes = ()=>config.openHour*60;
+
+  // время начала по умолчанию = сейчас, округлённое ВВЕРХ до 5 мин
+  function getDefaultStartTime(){
+    const now=new Date();
+    let m = now.getHours()*60+now.getMinutes();
+    m = Math.ceil(m/5)*5;
+    m = Math.max(m, openingMinutes());
+    m = Math.min(m, closingMinutes()-30);
+    return minutesToTime(m);
+  }
 
   const getTimeSlots = () => {
     const slots=[];
@@ -515,11 +535,9 @@
     return total;
   };
 
-  // имя -> ключ для реестра (безопасный ключ Firebase)
   const nameKey = (ln,fn)=> `${ln} ${fn}`.trim().toLowerCase()
     .replace(/\s+/g,'_').replace(/[.#$\[\]/]/g,'');
 
-  // владелец имени среди броней ТЕКУЩЕЙ НЕДЕЛИ (защита от перехвата имени)
   const ownerFromWeekBookings = (ln,fn) => {
     const l=ln.trim().toLowerCase(), f=fn.trim().toLowerCase();
     const ws=getWeekStart();
@@ -543,6 +561,7 @@
     const slot=new Date(y,m-1,d,h,min);
     if (slot<new Date()) return false;
     if (slot>new Date(Date.now()+config.maxAdvanceHours*3600*1000)) return false;
+    if (h*60+min < openingMinutes()) return false; // не раньше открытия
     return true;
   };
   const canFinishByClosing = (timeStr,dur)=> (timeToMinutes(timeStr)+dur) <= closingMinutes();
@@ -576,6 +595,40 @@
     return d.toLocaleDateString(loc[currentLang],{weekday:'short',day:'numeric',month:'long'});
   };
 
+  // до какого времени машинка свободна после startTime
+  const getFreeUntil = (mid,date,startTime)=>{
+    const s=timeToMinutes(startTime);
+    let until=closingMinutes();
+    for (const b of Object.values(bookings)){
+      if (b.machineId!==mid||b.date!==date) continue;
+      const bs=timeToMinutes(b.startTime), be=timeToMinutes(b.endTime);
+      if (bs>=s && bs<until) until=bs;
+    }
+    return minutesToTime(until);
+  };
+  const getMaxFit = (mid,date,startTime)=>{
+    const s=timeToMinutes(startTime);
+    const u=timeToMinutes(getFreeUntil(mid,date,startTime));
+    return Math.max(0, u-s);
+  };
+
+  // ближайшие свободные окна (минимум 30 мин)
+  const getNearestFreeSlots = (mid,date,n=4)=>{
+    const res=[];
+    const startMin=Math.max(timeToMinutes(getDefaultStartTime()), openingMinutes());
+    const cands=new Set([minutesToTime(startMin)]);
+    for (const ts of getTimeSlots()){ if (timeToMinutes(ts)>=startMin) cands.add(ts); }
+    const arr=[...cands].sort((a,b)=>timeToMinutes(a)-timeToMinutes(b));
+    for (const tm of arr){
+      if (res.length>=n) break;
+      const s=timeToMinutes(tm);
+      if (s+30>closingMinutes()) continue;
+      if (!isSlotAvailable(mid,date,tm,addMinutes(tm,30))) continue;
+      res.push(tm);
+    }
+    return res;
+  };
+
   const cleanupOldBookings = async () => {
     const now=new Date(); const keys=[];
     for (const [key,b] of Object.entries(bookings)){
@@ -587,7 +640,6 @@
     for (const key of keys){ try{ await remove(ref(db,`bookings/${key}`)); }catch(e){console.error(e);} }
   };
 
-  // ===== UI =====
   window.setView = (v)=>{
     currentView=v;
     ['Machines','Schedule','List','Settings'].forEach(n=>{
@@ -604,25 +656,70 @@
   window.changeDate = (v)=>{ selectedDate=v; render(); };
   window.closeModal = (id)=>document.getElementById(id).classList.remove('active');
 
+  const renderQuickSlots = (mid)=>{
+    const box=document.getElementById('quickSlots');
+    const slots=getNearestFreeSlots(mid, selectedDate, 4);
+    if (!slots.length){ box.innerHTML=`<div class="free-window empty" style="grid-column:1/-1">${t('noFreeToday')}</div>`; return; }
+    box.innerHTML = slots.map((tm,i)=>{
+      const isNow = i===0;
+      return `<button class="quick-btn ${isNow?'now':''}" data-qs-time="${escapeHtml(tm)}">${isNow?`<small>${t('nowLabel')}</small>`:''}${tm}</button>`;
+    }).join('');
+  };
+
   const updateBookingUI = () => {
+    const mid = pendingBooking?.machineId;
     const time=document.getElementById('bookTime').value;
     const summary=document.getElementById('bookingSummary');
     const submitBtn=document.getElementById('bookSubmitBtn');
     const ln=document.getElementById('bookLastName').value.trim();
     const fn=document.getElementById('bookFirstName').value.trim();
-    if (!time){ summary.style.display='none'; submitBtn.disabled=false; return; }
-    const endMin=timeToMinutes(time)+selectedDuration;
-    const exceeds=endMin>closingMinutes();
+    const fw=document.getElementById('freeWindow');
+
+    if (mid) renderQuickSlots(mid);
+
+    if (!time){ summary.style.display='none'; fw.style.display='none'; submitBtn.disabled=false; return; }
+
+    const s=timeToMinutes(time);
+    const endMin=s+selectedDuration;
+    const exceedsClose = endMin>closingMinutes();
+    const beforeOpen = s<openingMinutes();
+    const occupied = !isSlotAvailable(mid, selectedDate, time, addMinutes(time,30)); // занято хотя бы на 30 мин
+    const maxFit = occupied ? 0 : getMaxFit(mid, selectedDate, time);
+    const until = getFreeUntil(mid, selectedDate, time);
+
+    // окно свободы
+    fw.style.display='block';
+    if (beforeOpen){
+      fw.className='free-window bad';
+      fw.textContent=`⛔ ${t('errTime',{advance:config.maxAdvanceHours})}`;
+    } else if (occupied){
+      fw.className='free-window bad';
+      fw.textContent=`⛔ ${t('errBusy')}`;
+    } else if (exceedsClose){
+      fw.className='free-window bad';
+      fw.textContent=t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
+    } else {
+      fw.className='free-window';
+      fw.textContent=t('freeUntil',{until, max:maxFit});
+    }
+
+    // summary
     summary.style.display='block';
-    if (exceeds){
+    if (exceedsClose || beforeOpen || occupied){
       summary.className='summary-box bad';
-      summary.textContent=t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
+      summary.textContent = occupied ? t('errBusy') : t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
+      submitBtn.disabled=true;
+    } else if (selectedDuration>maxFit){
+      summary.className='summary-box bad';
+      summary.textContent=t('tooLong',{max:maxFit});
       submitBtn.disabled=true;
     } else {
       summary.className='summary-box ok';
       summary.textContent=`${time} — ${minutesToTime(endMin)} • ${selectedDuration} ${t('min')}`;
       submitBtn.disabled=false;
     }
+
+    // недельный лимит
     const limitInfo=document.getElementById('weeklyLimitInfo');
     if (ln&&fn){
       const used=getWeeklyUsage(deviceId);
@@ -642,20 +739,12 @@
     const st=machineStatuses[machineId];
     const m=machinesList.find(x=>x.id===machineId);
     if (!m||!m.active||(st&&st.status!=='working')){ alert(t('brokenNotice')); return; }
-    pendingBooking={machineId,time};
+    pendingBooking={machineId,time:time||getDefaultStartTime()};
     document.getElementById('modalMachineName').textContent=`🧺 ${escapeHtml(m.name)}`;
     const ti=document.getElementById('bookTime');
     ti.min=`${String(config.openHour).padStart(2,'0')}:00`;
     ti.max=`${String(config.closeHour-1).padStart(2,'0')}:30`;
-    if (time) ti.value=time;
-    else {
-      const now=new Date(); let h=now.getHours(), mm=Math.floor(now.getMinutes()/5)*5;
-      if (h<config.openHour){h=config.openHour;mm=0;}
-      const maxH=config.closeHour-1;
-      if (h>maxH||(h===maxH&&mm>30)){h=maxH;mm=30;}
-      ti.value=`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-    }
-    pendingBooking.time=ti.value;
+    ti.value=pendingBooking.time;
     ti.onchange=()=>{ pendingBooking.time=ti.value; updateBookingUI(); };
     document.getElementById('bookLastName').value=localStorage.getItem('laundry_ln')||'';
     document.getElementById('bookFirstName').value=localStorage.getItem('laundry_fn')||'';
@@ -678,19 +767,20 @@
     const endTime=addMinutes(time,selectedDuration);
     if (!isSlotAvailable(pendingBooking.machineId,selectedDate,time,endTime)) return alert(t('errBusy'));
 
-    // ===== ЗАЩИТА ЛИМИТА ОТ КРАЖИ ИМЕНИ =====
+    // ===== ЗАЩИТА: одно устройство = одно имя =====
     const nk = nameKey(ln,fn);
+    const bind = deviceBindings[deviceId];
+    const reg = userRegistry[nk];
+    if (bind && bind.nameKey !== nk) return alert(t('deviceBound',{name:`${bind.lastName} ${bind.firstName}`}));
+    if (!bind && reg && reg.deviceId && reg.deviceId !== deviceId) return alert(t('errNameTaken'));
     const weekOwner = ownerFromWeekBookings(ln,fn);
     if (weekOwner && weekOwner !== deviceId) return alert(t('errNameTaken'));
-    const reg = userRegistry[nk];
-    if (reg && reg.deviceId && reg.deviceId !== deviceId) return alert(t('errNameTaken'));
-    if (!reg || !reg.deviceId) {
-      try { await set(ref(db,`userRegistry/${nk}`), {deviceId, lastName:ln, firstName:fn, claimedAt:Date.now()}); }
-      catch(e){ return alert('Error: '+e.message); }
-    }
-    // лимиты строго по deviceId владельца
-    const dev = deviceId;
+    try{
+      if (!bind) await set(ref(db,`deviceBindings/${deviceId}`),{lastName:ln,firstName:fn,nameKey:nk,boundAt:Date.now()});
+      if (!reg || reg.deviceId !== deviceId) await set(ref(db,`userRegistry/${nk}`),{deviceId,lastName:ln,firstName:fn,claimedAt:Date.now()});
+    }catch(e){ return alert('Error: '+e.message); }
 
+    const dev = deviceId;
     const weekly=getWeeklyUsage(dev);
     if (weekly+selectedDuration>config.weeklyLimit) return alert(t('errWeeklyLimit',{used:weekly,weekly:config.weeklyLimit,weeklyH:+(config.weeklyLimit/60).toFixed(1)}));
     const dayB=Object.values(bookings).filter(b=>b.date===selectedDate&&b.deviceId===dev);
@@ -703,9 +793,8 @@
     const key=`${pendingBooking.machineId}|${selectedDate}|${time}`;
     const newBooking={machineId:pendingBooking.machineId,lastName:ln,firstName:fn,date:selectedDate,startTime:time,endTime,duration:selectedDuration,deviceId:dev,createdAt:Date.now()};
     try{
-      // ===== ГОНКА: атомарная запись через транзакцию =====
       const res = await runTransaction(ref(db,`bookings/${key}`), (cur)=>{
-        if (cur !== null) return; // слот уже занят — отмена транзакции
+        if (cur !== null) return; // слот занят — отмена
         return newBooking;
       });
       if (!res.committed) return alert(t('errBusy'));
@@ -726,7 +815,6 @@
     catch(e){alert('Error: '+e.message);}
   };
 
-  // ===== НАСТРОЙКИ + ВАЛИДАЦИЯ =====
   window.saveSetting = (field,value)=>{
     const num=parseInt(value,10);
     if (isNaN(num)) return;
@@ -748,17 +836,13 @@
   window.saveSettings = async ()=>{
     const errs=validateConfig(config);
     if (errs.length) return alert(t('validationError')+'\n• '+errs.join('\n• '));
-    try{
-      await set(settingsRef,{...config});
-      showToast(t('saved')); render();
-    }catch(e){alert('Error: '+e.message);}
+    try{ await set(settingsRef,{...config}); showToast(t('saved')); render(); }catch(e){alert('Error: '+e.message);}
   };
   window.resetSettings = ()=>{ config={...DEFAULT_CONFIG}; render(); };
 
-  // ===== УПРАВЛЕНИЕ МАШИНКАМИ =====
   window.updateMachineField = (id, field, value)=>{
     const m=machinesList.find(x=>x.id===id); if(!m) return;
-    m[field]= field==='active' ? value : value; // строки/bool
+    m[field]=value;
   };
   window.saveMachine = async (id)=>{
     const m=machinesList.find(x=>x.id===id); if(!m) return;
@@ -788,7 +872,6 @@
     }catch(e){alert('Error: '+e.message);}
   };
 
-  // ===== СПИСОК ПОЛЬЗОВАТЕЛЕЙ =====
   window.usersSearchInput = (v)=>{ usersSearch=v; render(); };
   window.usersLetterSet = (l)=>{ usersLetter=(usersLetter===l?'':l); render(); };
   window.usersSortSet = (v)=>{ usersSort=v; render(); };
@@ -806,9 +889,16 @@
     if (!confirm(t('confirmCancel'))) return;
     try{ await remove(ref(db,`allowedUsers/${uid}`)); showToast(t('removed')); }catch(e){alert('Error: '+e.message);}
   };
+  // сброс привязки чистит ОБА индекса
   window.resetBind = async (nk)=>{
     if (!confirm(t('confirmCancel'))) return;
-    try{ await remove(ref(db,`userRegistry/${nk}`)); showToast(t('bindReset')); }catch(e){alert('Error: '+e.message);}
+    try{
+      const reg = userRegistry[nk];
+      const devId = reg && reg.deviceId;
+      await remove(ref(db,`userRegistry/${nk}`));
+      if (devId) await remove(ref(db,`deviceBindings/${devId}`));
+      showToast(t('bindReset'));
+    }catch(e){alert('Error: '+e.message);}
   };
 
   const RU_ALPHA='АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'.split('');
@@ -825,7 +915,6 @@
     return arr;
   };
 
-  // ===== ЛЕНТА ВРЕМЕНИ =====
   const renderTimelineBar = (machineId, mb)=>{
     const open=openingMinutes(), close=closingMinutes(), span=close-open;
     const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
@@ -847,11 +936,9 @@
     </div>`;
   };
 
-  // ===== БЕЙДЖ СЛЕДУЮЩИЙ СЛОТ =====
   const renderNextSlotBadge = ()=>{
     const mine=Object.values(bookings).filter(b=>b.deviceId===deviceId && getBookingStatus(b)!=='past');
     if (!mine.length) return '';
-    // ближайшая будущая (active считаем ближайшей)
     mine.sort((a,b)=>{
       const da=new Date(a.date+'T'+a.startTime), db=new Date(b.date+'T'+b.startTime);
       return da-db;
@@ -869,7 +956,6 @@
     </div>`;
   };
 
-  // ===== RENDER =====
   const render = ()=>{
     const appEl=document.getElementById('app');
     const allBookings=Object.entries(bookings).map(([key,b])=>({key,...b}));
@@ -967,7 +1053,6 @@
         <input type="text" id="newMachineFloor" placeholder="${t('machineFloorPh')}">
         <button class="btn-add-user" onclick="window.addMachine()">${t('addMachine')}</button>
       </div>
-
       <h4 style="margin-top:24px">${t('setLimits')}</h4>
       <div class="settings-grid">
         <div class="setting-item"><label>${t('setOpen')}</label>
@@ -975,7 +1060,7 @@
           <div class="setting-hint">0–23</div></div>
         <div class="setting-item"><label>${t('setClose')}</label>
           <input type="number" min="1" max="24" value="${config.closeHour}" onchange="window.saveSetting('closeHour',this.value)">
-          <div class="setting-hint">1–24, &gt; ${t('setOpen')}</div></div>
+          <div class="setting-hint">1–24</div></div>
         <div class="setting-item"><label>${t('setDailyMachines')}</label>
           <input type="number" min="1" max="${Math.max(1,machinesList.filter(m=>m.active).length)}" value="${config.dailyMachinesLimit}" onchange="window.saveSetting('dailyMachinesLimit',this.value)">
           <div class="setting-hint">1–${Math.max(1,machinesList.filter(m=>m.active).length)}</div></div>
@@ -1051,8 +1136,9 @@
       <div class="users-scroll">${rows}</div>`;
   };
 
-  // ===== ДЕЛЕГИРОВАНИЕ КЛИКОВ (вместо JSON в onclick) =====
   document.addEventListener('click', (e)=>{
+    const qs=e.target.closest('[data-qs-time]');
+    if (qs){ const tm=qs.getAttribute('data-qs-time'); document.getElementById('bookTime').value=tm; pendingBooking.time=tm; updateBookingUI(); return; }
     const cancel=e.target.closest('[data-cancel-key]');
     if (cancel){ doCancel(cancel.getAttribute('data-cancel-key')); return; }
     const rmUser=e.target.closest('[data-uid]');
@@ -1062,7 +1148,6 @@
     const dm=e.target.closest('[data-machine-id]');
     if (dm){ window.deleteMachine(Number(dm.getAttribute('data-machine-id'))); return; }
   });
-  // Escape закрывает модалки
   document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeModal('bookModal'); closeModal('adminLoginModal'); } });
 
   function applyTranslations(){
@@ -1073,6 +1158,7 @@
     document.querySelector('.t-list').textContent=t('list');
     document.querySelector('.t-settings').textContent=t('settings');
     document.querySelector('.t-admin').textContent=t('admin');
+    document.querySelector('.t-quickTitle').textContent=t('quickTitle');
     document.querySelector('.t-startTime').textContent=t('startTime');
     document.querySelector('.t-duration').textContent=t('duration');
     document.querySelector('.t-lastName').textContent=t('lastName');
@@ -1086,16 +1172,15 @@
   }
   window.setLanguage=(lang)=>{ currentLang=lang; localStorage.setItem('laundry_lang',lang); applyTranslations(); };
 
-  // ===== SUBSCRIPTIONS =====
   onValue(settingsRef,(s)=>{ const v=s.val(); if (v) config={...DEFAULT_CONFIG,...v}; render(); });
   onValue(bookingsRef,(s)=>{ bookings=s.val()||{}; cleanupOldBookings(); render(); });
   onValue(machineStatusRef,(s)=>{ machineStatuses=s.val()||{}; render(); });
   onValue(allowedUsersRef,(s)=>{ allowedUsers=s.val()||{}; render(); });
   onValue(userRegistryRef,(s)=>{ userRegistry=s.val()||{}; render(); });
+  onValue(deviceBindingsRef,(s)=>{ deviceBindings=s.val()||{}; render(); });
   onValue(machinesRef,(s)=>{
     const v=s.val();
     if (!v || Object.keys(v).length===0){
-      // миграция: создаём дефолтные 5 машинок один раз
       if (!machinesLoaded){
         machinesLoaded=true;
         const def={};
