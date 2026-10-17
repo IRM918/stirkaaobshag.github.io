@@ -411,7 +411,7 @@
       quickTitle:'Ближайшее свободное время', nowLabel:'▶ Сейчас',
       freeUntil:'Свободно до {until} • максимум {max} мин',
       tooLong:'⛔ Не влезает: свободно только {max} мин. Уменьши длительность.',
-      noFreeToday:'Сегодня свободных окон нет. Выбери другой день.',
+      noFreeToday:'На этот день свободных окон нет. Выбери другой день.',
       errName:'Укажи имя и фамилию', errTime:'Нельзя бронировать прошедшее время или более чем на {advance} часов вперёд!',
       errBusy:'Время уже занято!', errClosing:'Стирка закончится после закрытия ({close}:00). Выбери раньше или короче.',
       errLimit1:'Лимит: макс. {dailyMachines} разные машинки в день.', errLimit2:'Лимит: макс. {perMachineH} часа на одну машинку в день.',
@@ -457,7 +457,7 @@
       quickTitle:'Nearest free time', nowLabel:'▶ Now',
       freeUntil:'Free until {until} • max {max} min',
       tooLong:'⛔ Too long: only {max} min free. Reduce duration.',
-      noFreeToday:'No free slots today. Pick another day.',
+      noFreeToday:'No free slots on this day. Pick another day.',
       errName:'Enter first and last name', errTime:'Cannot book past time or >{advance}h ahead!',
       errBusy:'Slot already booked!', errClosing:'Wash would end after closing ({close}:00). Pick earlier or shorter.',
       errLimit1:'Limit: max {dailyMachines} different machines per day.', errLimit2:'Limit: max {perMachineH} hours per machine per day.',
@@ -503,7 +503,7 @@
       quickTitle:'最近空闲时间', nowLabel:'▶ 现在',
       freeUntil:'空闲至 {until} • 最多 {max} 分钟',
       tooLong:'⛔ 太长：仅空闲 {max} 分钟，请缩短。',
-      noFreeToday:'今天没有空闲时段，请换一天。',
+      noFreeToday:'这一天没有空闲时段，请换一天。',
       errName:'请输入姓名', errTime:'无法预约过去时间或超过{advance}小时！',
       errBusy:'该时段已被预约！', errClosing:'洗衣将在{close}:00关门后结束，请选更早或更短。',
       errLimit1:'限制：每天最多{dailyMachines}台不同机器。', errLimit2:'限制：每台机器每天最多{perMachineH}小时。',
@@ -594,7 +594,10 @@
   const closingMinutes = ()=>config.closeHour*60;
   const openingMinutes = ()=>config.openHour*60;
 
-  function getDefaultStartTime(){
+  // ★ ПРАВКА 1: учитываем выбранную дату (будущий день -> с открытия)
+  function getDefaultStartTime(dateStr){
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (dateStr && dateStr > todayStr) return minutesToTime(openingMinutes());
     const now=new Date();
     let m = now.getHours()*60+now.getMinutes();
     m = Math.ceil(m/5)*5;
@@ -687,9 +690,10 @@
     const u=timeToMinutes(getFreeUntil(mid,date,startTime));
     return Math.max(0, u-s);
   };
+  // ★ ПРАВКА 2: старт быстрых слотов от выбранной даты
   const getNearestFreeSlots = (mid,date,n=4)=>{
     const res=[];
-    const startMin=Math.max(timeToMinutes(getDefaultStartTime()), openingMinutes());
+    const startMin=timeToMinutes(getDefaultStartTime(date));
     const cands=new Set([minutesToTime(startMin)]);
     for (const ts of getTimeSlots()){ if (timeToMinutes(ts)>=startMin) cands.add(ts); }
     const arr=[...cands].sort((a,b)=>timeToMinutes(a)-timeToMinutes(b));
@@ -727,7 +731,12 @@
     document.querySelectorAll('.duration-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active'); updateBookingUI();
   };
-  window.changeDate = (v)=>{ selectedDate=v; render(); };
+  // ★ ПРАВКА 4: защита от прошлого
+  window.changeDate = (v)=>{
+    const today=new Date().toISOString().split('T')[0];
+    selectedDate = (v && v<today) ? today : v;
+    render();
+  };
   window.closeModal = (id)=>document.getElementById(id).classList.remove('active');
 
   let isAdmin = false;
@@ -842,16 +851,18 @@
     } else limitInfo.style.display='none';
   };
 
+  // ★ ПРАВКА 3: убираем дубль расчёта, время по умолчанию = от выбранной даты
   window.openBookModal = (machineId,time)=>{
     const st=machineStatuses[machineId];
     const m=machinesList.find(x=>x.id===machineId);
     if (!m||!m.active||(st&&st.status!=='working')){ alert(t('brokenNotice')); return; }
-    pendingBooking={machineId,time:time||getDefaultStartTime()};
+    const defTime = time || getDefaultStartTime(selectedDate);
+    pendingBooking={machineId,time:defTime};
     document.getElementById('modalMachineName').textContent=`🧺 ${escapeHtml(m.name)}`;
     const ti=document.getElementById('bookTime');
     ti.min=`${String(config.openHour).padStart(2,'0')}:00`;
     ti.max=`${String(config.closeHour-1).padStart(2,'0')}:30`;
-    ti.value=pendingBooking.time;
+    ti.value=defTime;
     ti.onchange=()=>{ pendingBooking.time=ti.value; updateBookingUI(); };
     document.getElementById('bookLastName').value=localStorage.getItem('laundry_ln')||'';
     document.getElementById('bookFirstName').value=localStorage.getItem('laundry_fn')||'';
@@ -1085,7 +1096,7 @@
     let html=`
       <div class="date-selector">
         <label>${t('date')}</label>
-        <input type="date" value="${selectedDate}" onchange="window.changeDate(this.value)">
+        <input type="date" value="${selectedDate}" min="${new Date().toISOString().split('T')[0]}" onchange="window.changeDate(this.value)">
         <span style="font-size:14px;color:var(--text-secondary)">${formatDate(selectedDate)}</span>
       </div>
       <div class="rules-hint">${rulesText()}</div>`;
