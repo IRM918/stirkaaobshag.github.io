@@ -53,6 +53,9 @@
   .next-slot { background:var(--primary); color:#fff; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(79,70,229,.25); }
   .next-slot .ns-icon { font-size:22px; }
   .next-slot .ns-sub { font-weight:400; opacity:.85; font-size:12px; }
+  .verified-banner { background:var(--active-bg); color:var(--active-text); border:1px solid var(--active-border); padding:8px 14px; border-radius:10px; font-size:13px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .verified-banner .vb-who { font-weight:700; }
+  .verified-banner button { margin-left:auto; background:transparent; border:1px solid var(--active-border); color:var(--active-text); border-radius:6px; padding:3px 8px; font-size:11px; font-weight:600; cursor:pointer; }
   .limit-info { padding:10px 14px; border-radius:10px; font-size:13px; text-align:center; margin-bottom:12px; border:1px solid var(--limit-border); background:var(--limit-bg); color:var(--limit-text); font-weight:600; }
   .machines-list { display:grid; gap:16px; }
   .machine-card { background:var(--card); border-radius:16px; padding:20px; border:2px solid var(--border); transition:all .3s; }
@@ -118,10 +121,17 @@
   @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
   .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
   .modal-title h3 { font-size:18px; font-weight:700; }
+  .modal-title p { font-size:13px; color:var(--text-secondary); margin-top:2px; }
   .modal-close { background:none; border:none; font-size:28px; color:var(--text-secondary); cursor:pointer; }
   .form-group { margin-bottom:16px; }
   .form-group label { display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
   .form-group input,.form-group select,.form-group textarea { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:10px; font-size:15px; background:var(--input-bg); color:var(--text); }
+  .pin-input { font-size:24px !important; letter-spacing:10px; text-align:center; font-weight:700; }
+  .pin-error { color:var(--busy-text); font-size:13px; font-weight:600; text-align:center; margin-bottom:10px; min-height:18px; }
+  .pin-with-gen { display:flex; gap:8px; align-items:stretch; }
+  .pin-with-gen input { flex:1; }
+  .btn-gen { flex:0 0 auto; padding:0 14px; font-size:18px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); cursor:pointer; color:var(--text); line-height:1; }
+  .btn-gen:active { background:var(--past-bg); }
   .quick-title { font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px; }
   .quick-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-bottom:12px; }
   .quick-btn { padding:8px 4px; border:1px solid var(--free-border); border-radius:8px; background:var(--free-bg); color:var(--free-text); font-size:12px; font-weight:700; cursor:pointer; text-align:center; line-height:1.2; }
@@ -170,8 +180,9 @@
   .alpha-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
   .alpha-btn.empty { opacity:.35; cursor:default; }
   .list-stats { font-size:12px; color:var(--text-secondary); text-align:center; }
-  .add-user-bar { display:flex; gap:8px; flex-wrap:wrap; }
-  .add-user-bar input { flex:1; min-width:120px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:14px; }
+  .add-user-bar { display:grid; grid-template-columns:1fr 1fr 1fr auto; gap:8px; }
+  @media (max-width:520px){ .add-user-bar{grid-template-columns:1fr 1fr} }
+  .add-user-bar input { padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:14px; }
   .btn-add-user { padding:10px 16px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
   .users-scroll { background:var(--card); border:1px solid var(--border); border-radius:14px; max-height:60vh; overflow-y:auto; }
   .letter-header { position:sticky; top:0; background:var(--input-bg); color:var(--primary); font-weight:700; font-size:13px; padding:6px 14px; border-bottom:1px solid var(--border); z-index:2; }
@@ -180,8 +191,8 @@
   .user-name { font-size:15px; font-weight:500; }
   .user-meta { font-size:11px; color:var(--text-secondary); }
   .bind-chip { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; }
-  .bind-chip.bound { background:var(--free-bg); color:var(--free-text); }
-  .bind-chip.unbound { background:var(--past-bg); color:var(--past-text); }
+  .bind-chip.ok { background:var(--free-bg); color:var(--free-text); }
+  .bind-chip.warn { background:var(--busy-bg); color:var(--busy-text); }
   .user-actions { display:flex; gap:6px; }
   .btn-mini { padding:5px 9px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--input-bg); color:var(--text); white-space:nowrap; }
   .btn-mini.danger { background:var(--busy-bg); color:var(--busy-text); border-color:var(--busy-border); }
@@ -230,16 +241,13 @@
       <div class="modal-title"><h3 id="modalMachineName">Бронирование</h3></div>
       <button class="modal-close" onclick="closeModal('bookModal')">×</button>
     </div>
-
     <div class="quick-title t-quickTitle">Ближайшее свободное время</div>
     <div class="quick-grid" id="quickSlots"></div>
-
     <div class="form-group">
       <label class="t-startTime">Время начала</label>
       <input type="time" id="bookTime" step="300">
     </div>
     <div id="freeWindow" class="free-window" style="display:none;"></div>
-
     <div class="form-group">
       <label class="t-duration">Длительность</label>
       <div class="duration-grid" id="durationGrid">
@@ -256,6 +264,47 @@
     <div id="bookingSummary" class="summary-box ok" style="display:none;"></div>
     <div id="weeklyLimitInfo" class="limit-info" style="display:none;"></div>
     <button class="btn-submit t-book" id="bookSubmitBtn" onclick="confirmBooking()">Забронировать</button>
+  </div>
+</div>
+
+<!-- Модалка ввода PIN -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <h3 class="t-pinTitle">Подтверждение личности</h3>
+        <p id="pinWho"></p>
+      </div>
+      <button class="modal-close" onclick="cancelPin()">×</button>
+    </div>
+    <div class="form-group">
+      <label class="t-pinLabel">PIN‑код (6 цифр)</label>
+      <input type="tel" id="pinInput" class="pin-input" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••">
+    </div>
+    <div class="pin-error" id="pinError"></div>
+    <button class="btn-submit t-pinVerify" onclick="submitPin()">Подтвердить</button>
+  </div>
+</div>
+
+<!-- Модалка админа: задать/сбросить PIN -->
+<div class="modal-overlay" id="adminPinModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">
+        <h3 class="t-adminPinTitle">Новый PIN</h3>
+        <p id="adminPinWho"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal('adminPinModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="t-newPin">PIN‑код (6 цифр)</label>
+      <div class="pin-with-gen">
+        <input type="tel" id="adminPinInput" class="pin-input" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••">
+        <button type="button" class="btn-gen" title="Случайный PIN" onclick="window.genPinInto('adminPinInput')">🎲</button>
+      </div>
+    </div>
+    <div class="pin-error" id="adminPinError"></div>
+    <button class="btn-submit t-savePin" onclick="submitAdminPin()">Сохранить PIN</button>
   </div>
 </div>
 
@@ -295,10 +344,9 @@
   const allowedUsersRef = ref(db, 'allowedUsers');
   const settingsRef = ref(db, 'settings');
   const machinesRef = ref(db, 'machines');
-  const userRegistryRef = ref(db, 'userRegistry');
-  const deviceBindingsRef = ref(db, 'deviceBindings');
 
-  const ADMIN_PASSWORD = 'admin123'; // ← поменяй на свой
+  const ADMIN_PASSWORD = '89220945350'; // ← поменяй на свой
+  const PIN_SESSION_HOURS = 12;
 
   const DEFAULT_CONFIG = {
     openHour: 8, closeHour: 23,
@@ -311,6 +359,45 @@
   let config = { ...DEFAULT_CONFIG };
 
   const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  async function sha256(str){
+    if (!window.crypto || !crypto.subtle) throw new Error('INSECURE_CONTEXT');
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(str)));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ===== УНИКАЛЬНОСТЬ / СЛОЖНОСТЬ PIN =====
+  function findDuplicatePinHash(excludeUid, hash){
+    for (const [uid,u] of Object.entries(allowedUsers)){
+      if (excludeUid && uid===excludeUid) continue;
+      if (u.pinHash && u.pinHash===hash) return u;
+    }
+    return null;
+  }
+  function isWeakPin(pin){
+    if (/^(\d)\1{5}$/.test(pin)) return true;
+    const seq='0123456789';
+    for (let i=0;i<=4;i++){
+      const asc=seq.slice(i,i+6), desc=[...asc].reverse().join('');
+      if (pin===asc || pin===desc) return true;
+    }
+    return false;
+  }
+  function randomPin(){
+    let p; do { p=String(Math.floor(100000+Math.random()*900000)); } while (isWeakPin(p));
+    return p;
+  }
+  window.genPinInto = async (id)=>{
+    const el=document.getElementById(id); if(!el) return;
+    let pin, hash, tries=0;
+    do {
+      pin=randomPin();
+      try { hash=await sha256(pin); }
+      catch { el.value=pin; return; }
+      tries++;
+    } while (findDuplicatePinHash(null, hash) && tries<25);
+    el.value=pin;
+  };
 
   const i18n = {
     ru: {
@@ -329,11 +416,18 @@
       errBusy:'Время уже занято!', errClosing:'Стирка закончится после закрытия ({close}:00). Выбери раньше или короче.',
       errLimit1:'Лимит: макс. {dailyMachines} разные машинки в день.', errLimit2:'Лимит: макс. {perMachineH} часа на одну машинку в день.',
       errCancel:'Отменить можно только свою бронь.', errNotAllowed:'❌ Вас нет в списке разрешённых. Обратитесь к коменданту.',
-      errNameTaken:'⛔ Это имя уже закреплено за другим устройством. Обратись к админу, чтобы сбросить привязку.',
-      deviceBound:'🔒 Это устройство привязано к {name}. Для смены имени попроси админа сбросить привязку.',
       errWeeklyLimit:'⏰ Превышен лимит {weeklyH} часа в неделю. Использовано: {used} из {weekly} мин.',
       confirmCancel:'Отменить действие?', noSlots:'Нет доступных слотов.',
       machine:'Стиралка', floor:'этаж',
+      pinTitle:'Подтверждение личности', pinWho:'Верификация: {name}', pinLabel:'PIN‑код (6 цифр)', pinVerify:'Подтвердить',
+      pinWrong:'Неверный PIN‑код.', pinLen:'PIN должен содержать 6 цифр.', pinNotSet:'❌ Для вас не задан PIN. Обратитесь к админу.',
+      pinOk:'✅ Личность подтверждена', pinSessionExpired:'Срок подтверждения истёк. Введите PIN снова.',
+      insecureCtx:'⚠️ PIN работает только по https. Открой сайт на Netlify, а не локальный файл.',
+      verifiedAs:'Подтверждён как', logoutVer:'Забыть меня',
+      adminPinTitle:'Новый PIN для жильца', newPin:'PIN‑код (6 цифр)', savePin:'Сохранить PIN', pinSaved:'✅ PIN сохранён',
+      pinMissing:'PIN не задан', pinSet:'PIN задан',
+      pinDup:'⛔ Такой PIN уже используется другим жильцом. Нажми 🎲 для нового.',
+      pinWeak:'⛔ Слишком простой PIN (типа 123456 / 000000). Выбери другой.',
       adminLogin:'Вход для администратора', password:'Пароль', login:'Войти', wrongPassword:'Неверный пароль',
       working:'Работает', broken:'Сломана', maintenance:'На обслуживании',
       comment:'Комментарий', brokenNotice:'⚠️ Машинка недоступна',
@@ -350,7 +444,7 @@
       sortLasc:'Фамилия А-Я', sortLdesc:'Фамилия Я-А', sortAdded:'По дате добавления',
       all:'Все', noUsers:'Список пуст. Добавьте пользователей.', noMatch:'Ничего не найдено.',
       shownOf:'Показано {shown} из {total}', addNew:'+ Добавить', added:'✅ Пользователь добавлен', removed:'🗑️ Пользователь удалён',
-      addedOn:'добавлен', bound:'привязан', unbound:'не привязан', resetBind:'Сбросить привязку', bindReset:'✅ Привязка сброшена', bindTo:'устройство'
+      addedOn:'добавлен', resetPin:'Сбросить PIN', lastSeen:'последняя активность'
     },
     en: {
       title:'Laundry', subtitle:'Dormitory Booking', machines:'Machines', schedule:'Schedule', admin:'Admin', list:'Users', settings:'Settings',
@@ -368,11 +462,18 @@
       errBusy:'Slot already booked!', errClosing:'Wash would end after closing ({close}:00). Pick earlier or shorter.',
       errLimit1:'Limit: max {dailyMachines} different machines per day.', errLimit2:'Limit: max {perMachineH} hours per machine per day.',
       errCancel:'You can only cancel your own booking.', errNotAllowed:'❌ You are not in the allowed list. Contact the manager.',
-      errNameTaken:'⛔ This name is already bound to another device. Ask admin to reset the binding.',
-      deviceBound:'🔒 This device is bound to {name}. Ask admin to reset to switch names.',
       errWeeklyLimit:'⏰ Weekly {weeklyH}h limit exceeded. Used: {used} of {weekly} min.',
       confirmCancel:'Confirm action?', noSlots:'No available slots.',
       machine:'Machine', floor:'floor',
+      pinTitle:'Verify identity', pinWho:'Verifying: {name}', pinLabel:'PIN (6 digits)', pinVerify:'Verify',
+      pinWrong:'Wrong PIN.', pinLen:'PIN must be 6 digits.', pinNotSet:'❌ No PIN set for you. Contact admin.',
+      pinOk:'✅ Identity verified', pinSessionExpired:'Verification expired. Enter PIN again.',
+      insecureCtx:'⚠️ PIN works only over https. Open the Netlify site, not a local file.',
+      verifiedAs:'Verified as', logoutVer:'Forget me',
+      adminPinTitle:'New PIN for resident', newPin:'PIN (6 digits)', savePin:'Save PIN', pinSaved:'✅ PIN saved',
+      pinMissing:'No PIN', pinSet:'PIN set',
+      pinDup:'⛔ This PIN is already used by another resident. Press 🎲 for a new one.',
+      pinWeak:'⛔ Too weak PIN (like 123456 / 000000). Pick another.',
       adminLogin:'Admin Login', password:'Password', login:'Login', wrongPassword:'Wrong password',
       working:'Working', broken:'Broken', maintenance:'Maintenance',
       comment:'Comment', brokenNotice:'⚠️ Machine unavailable',
@@ -389,7 +490,7 @@
       sortLasc:'Last name A-Z', sortLdesc:'Last name Z-A', sortAdded:'By date added',
       all:'All', noUsers:'List is empty. Add users.', noMatch:'Nothing found.',
       shownOf:'Showing {shown} of {total}', addNew:'+ Add', added:'✅ User added', removed:'🗑️ User removed',
-      addedOn:'added', bound:'bound', unbound:'unbound', resetBind:'Reset binding', bindReset:'✅ Binding reset', bindTo:'device'
+      addedOn:'added', resetPin:'Reset PIN', lastSeen:'last activity'
     },
     zh: {
       title:'洗衣房', subtitle:'宿舍预约系统', machines:'洗衣机', schedule:'时间表', admin:'管理员', list:'用户', settings:'设置',
@@ -407,11 +508,18 @@
       errBusy:'该时段已被预约！', errClosing:'洗衣将在{close}:00关门后结束，请选更早或更短。',
       errLimit1:'限制：每天最多{dailyMachines}台不同机器。', errLimit2:'限制：每台机器每天最多{perMachineH}小时。',
       errCancel:'只能取消自己的预约。', errNotAllowed:'❌ 您不在授权名单中，请联系管理员。',
-      errNameTaken:'⛔ 该名字已绑定其他设备，请联系管理员解绑。',
-      deviceBound:'🔒 此设备已绑定 {name}，换名请联系管理员解绑。',
       errWeeklyLimit:'⏰ 超过每周{weeklyH}小时限制。已用：{used}/{weekly}分钟。',
       confirmCancel:'确认操作？', noSlots:'没有可用时段。',
       machine:'洗衣机', floor:'楼',
+      pinTitle:'身份验证', pinWho:'验证：{name}', pinLabel:'PIN 码（6位）', pinVerify:'确认',
+      pinWrong:'PIN 码错误。', pinLen:'PIN 必须为6位数字。', pinNotSet:'❌ 未为您设置 PIN，请联系管理员。',
+      pinOk:'✅ 身份已确认', pinSessionExpired:'验证已过期，请重新输入 PIN。',
+      insecureCtx:'⚠️ PIN 仅在 https 下可用，请打开 Netlify 站点而非本地文件。',
+      verifiedAs:'已验证为', logoutVer:'退出登录',
+      adminPinTitle:'为该住户设置新 PIN', newPin:'PIN 码（6位）', savePin:'保存 PIN', pinSaved:'✅ PIN 已保存',
+      pinMissing:'未设 PIN', pinSet:'已设 PIN',
+      pinDup:'⛔ 该 PIN 已被其他住户使用，点 🎲 换一个。',
+      pinWeak:'⛔ PIN 太简单（如 123456 / 000000），请换一个。',
       adminLogin:'管理员登录', password:'密码', login:'登录', wrongPassword:'密码错误',
       working:'正常', broken:'故障', maintenance:'维护中',
       comment:'备注', brokenNotice:'⚠️ 机器不可用',
@@ -428,7 +536,7 @@
       sortLasc:'姓 A-Z', sortLdesc:'姓 Z-A', sortAdded:'按添加时间',
       all:'全部', noUsers:'列表为空，请添加用户。', noMatch:'未找到。',
       shownOf:'显示 {shown}/{total}', addNew:'+ 添加', added:'✅ 用户已添加', removed:'🗑️ 用户已删除',
-      addedOn:'添加于', bound:'已绑定', unbound:'未绑定', resetBind:'解绑', bindReset:'✅ 已解绑', bindTo:'设备'
+      addedOn:'添加于', resetPin:'重置 PIN', lastSeen:'最近活动'
     }
   };
 
@@ -461,39 +569,24 @@
   window.toggleTheme = () => { isDark=!isDark; localStorage.setItem('laundry_dark',isDark); applyTheme(); };
   applyTheme();
 
-  let bookings={}, machineStatuses={}, allowedUsers={}, userRegistry={}, deviceBindings={};
+  let bookings={}, machineStatuses={}, allowedUsers={};
   let machinesList=[]; let machinesLoaded=false;
   let currentView='machines';
   let selectedDate = new Date().toISOString().split('T')[0];
   let pendingBooking=null, selectedDuration=60;
   let usersSearch='', usersLetter='', usersSort='lastNameAsc';
 
-  let deviceId = localStorage.getItem('laundry_device_id');
-  if (!deviceId) {
-    deviceId = 'dev_'+Math.random().toString(36).substr(2,9)+Date.now().toString(36);
-    localStorage.setItem('laundry_device_id', deviceId);
-  }
+  function getSession(){ try{ return JSON.parse(localStorage.getItem('laundry_pin_session')||'null'); }catch{ return null; } }
+  function hasActiveSession(nameKey){ const s=getSession(); return !!(s && s.nameKey===nameKey && s.exp>Date.now()); }
+  function setSession(nameKey,pinHash){ localStorage.setItem('laundry_pin_session', JSON.stringify({nameKey,pinHash,exp:Date.now()+PIN_SESSION_HOURS*3600*1000})); }
+  function clearSession(){ localStorage.removeItem('laundry_pin_session'); }
+  function getLastIdentity(){ try{ return JSON.parse(localStorage.getItem('laundry_last_identity')||'null'); }catch{ return null; } }
+  function setLastIdentity(nameKey,ln,fn){ localStorage.setItem('laundry_last_identity', JSON.stringify({nameKey,lastName:ln,firstName:fn})); }
+  function clearLastIdentity(){ localStorage.removeItem('laundry_last_identity'); }
 
-  let isAdmin = false;
-  function applyAdminVisibility() {
-    document.getElementById('btnList').style.display = isAdmin ? '' : 'none';
-    document.getElementById('btnSettings').style.display = isAdmin ? '' : 'none';
-  }
-  window.toggleAdmin = () => {
-    if (isAdmin) {
-      isAdmin = false; applyAdminVisibility();
-      document.getElementById('adminBtn').classList.remove('active');
-      if (currentView==='list'||currentView==='settings') currentView='machines';
-      render();
-    } else document.getElementById('adminLoginModal').classList.add('active');
-  };
-  window.loginAdmin = () => {
-    if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
-      isAdmin = true; applyAdminVisibility();
-      document.getElementById('adminBtn').classList.add('active');
-      closeModal('adminLoginModal'); document.getElementById('adminPassword').value=''; render();
-    } else alert(t('wrongPassword'));
-  };
+  const nameKey = (ln,fn)=> `${ln} ${fn}`.trim().toLowerCase().replace(/\s+/g,'_').replace(/[.#$\[\]/]/g,'');
+  const bookingNameKey = (b)=> b.nameKey || nameKey(b.lastName, b.firstName);
+  const findAllowedByNameKey = (nk)=> Object.values(allowedUsers).find(u=>nameKey(u.lastName,u.firstName)===nk);
 
   const timeToMinutes = (tm)=>{const[h,m]=tm.split(':').map(Number);return h*60+m;};
   const minutesToTime = (mn)=>`${String(Math.floor(mn/60)).padStart(2,'0')}:${String(mn%60).padStart(2,'0')}`;
@@ -501,7 +594,6 @@
   const closingMinutes = ()=>config.closeHour*60;
   const openingMinutes = ()=>config.openHour*60;
 
-  // время начала по умолчанию = сейчас, округлённое ВВЕРХ до 5 мин
   function getDefaultStartTime(){
     const now=new Date();
     let m = now.getHours()*60+now.getMinutes();
@@ -525,29 +617,14 @@
     const diff=now.getDate()-day+(day===0?-6:1);
     const mon=new Date(now.setDate(diff)); mon.setHours(0,0,0,0); return mon;
   };
-  const getWeeklyUsage = (devId) => {
+  const getWeeklyUsage = (nk) => {
     const ws=getWeekStart(); let total=0;
     for (const b of Object.values(bookings)){
-      if (b.deviceId!==devId) continue;
+      if (bookingNameKey(b)!==nk) continue;
       const[y,m,d]=b.date.split('-').map(Number);
       if (new Date(y,m-1,d)>=ws) total+=(b.duration||0);
     }
     return total;
-  };
-
-  const nameKey = (ln,fn)=> `${ln} ${fn}`.trim().toLowerCase()
-    .replace(/\s+/g,'_').replace(/[.#$\[\]/]/g,'');
-
-  const ownerFromWeekBookings = (ln,fn) => {
-    const l=ln.trim().toLowerCase(), f=fn.trim().toLowerCase();
-    const ws=getWeekStart();
-    for (const b of Object.values(bookings)){
-      if (b.lastName.toLowerCase()===l && b.firstName.toLowerCase()===f){
-        const[y,m,d]=b.date.split('-').map(Number);
-        if (new Date(y,m-1,d)>=ws) return b.deviceId;
-      }
-    }
-    return null;
   };
 
   const isUserAllowed = (ln,fn) => {
@@ -561,7 +638,7 @@
     const slot=new Date(y,m-1,d,h,min);
     if (slot<new Date()) return false;
     if (slot>new Date(Date.now()+config.maxAdvanceHours*3600*1000)) return false;
-    if (h*60+min < openingMinutes()) return false; // не раньше открытия
+    if (h*60+min < openingMinutes()) return false;
     return true;
   };
   const canFinishByClosing = (timeStr,dur)=> (timeToMinutes(timeStr)+dur) <= closingMinutes();
@@ -595,13 +672,12 @@
     return d.toLocaleDateString(loc[currentLang],{weekday:'short',day:'numeric',month:'long'});
   };
 
-  // до какого времени машинка свободна после startTime
   const getFreeUntil = (mid,date,startTime)=>{
     const s=timeToMinutes(startTime);
     let until=closingMinutes();
     for (const b of Object.values(bookings)){
       if (b.machineId!==mid||b.date!==date) continue;
-      const bs=timeToMinutes(b.startTime), be=timeToMinutes(b.endTime);
+      const bs=timeToMinutes(b.startTime);
       if (bs>=s && bs<until) until=bs;
     }
     return minutesToTime(until);
@@ -611,8 +687,6 @@
     const u=timeToMinutes(getFreeUntil(mid,date,startTime));
     return Math.max(0, u-s);
   };
-
-  // ближайшие свободные окна (минимум 30 мин)
   const getNearestFreeSlots = (mid,date,n=4)=>{
     const res=[];
     const startMin=Math.max(timeToMinutes(getDefaultStartTime()), openingMinutes());
@@ -656,6 +730,58 @@
   window.changeDate = (v)=>{ selectedDate=v; render(); };
   window.closeModal = (id)=>document.getElementById(id).classList.remove('active');
 
+  let isAdmin = false;
+  function applyAdminVisibility() {
+    document.getElementById('btnList').style.display = isAdmin ? '' : 'none';
+    document.getElementById('btnSettings').style.display = isAdmin ? '' : 'none';
+  }
+  window.toggleAdmin = () => {
+    if (isAdmin) {
+      isAdmin = false; applyAdminVisibility();
+      document.getElementById('adminBtn').classList.remove('active');
+      if (currentView==='list'||currentView==='settings') currentView='machines';
+      render();
+    } else document.getElementById('adminLoginModal').classList.add('active');
+  };
+  window.loginAdmin = () => {
+    if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
+      isAdmin = true; applyAdminVisibility();
+      document.getElementById('adminBtn').classList.add('active');
+      closeModal('adminLoginModal'); document.getElementById('adminPassword').value=''; render();
+    } else alert(t('wrongPassword'));
+  };
+
+  let pinCtx = null;
+  function openPinModal(nameKey, expectedHash, ln, fn, cb){
+    if (!expectedHash){ alert(t('pinNotSet')); return false; }
+    pinCtx = {nameKey, expectedHash, ln, fn, cb};
+    document.getElementById('pinWho').textContent = t('pinWho',{name:`${ln} ${fn}`});
+    document.getElementById('pinInput').value='';
+    document.getElementById('pinError').textContent='';
+    document.getElementById('pinModal').classList.add('active');
+    setTimeout(()=>document.getElementById('pinInput').focus(),100);
+    return true;
+  }
+  window.cancelPin = ()=>{ pinCtx=null; closeModal('pinModal'); };
+  window.submitPin = async ()=>{
+    if (!pinCtx) return;
+    const val = document.getElementById('pinInput').value.trim();
+    const errEl = document.getElementById('pinError');
+    if (!/^\d{6}$/.test(val)){ errEl.textContent=t('pinLen'); return; }
+    let hash;
+    try { hash = await sha256(val); }
+    catch { errEl.textContent=t('insecureCtx'); return; }
+    if (hash !== pinCtx.expectedHash){ errEl.textContent=t('pinWrong'); return; }
+    setSession(pinCtx.nameKey, pinCtx.expectedHash);
+    setLastIdentity(pinCtx.nameKey, pinCtx.ln, pinCtx.fn);
+    const cb = pinCtx.cb; pinCtx=null;
+    closeModal('pinModal');
+    showToast(t('pinOk'));
+    if (cb) cb();
+    render();
+  };
+  window.logoutVer = ()=>{ clearSession(); clearLastIdentity(); render(); showToast(t('logoutVer')); };
+
   const renderQuickSlots = (mid)=>{
     const box=document.getElementById('quickSlots');
     const slots=getNearestFreeSlots(mid, selectedDate, 4);
@@ -674,55 +800,36 @@
     const ln=document.getElementById('bookLastName').value.trim();
     const fn=document.getElementById('bookFirstName').value.trim();
     const fw=document.getElementById('freeWindow');
-
     if (mid) renderQuickSlots(mid);
-
     if (!time){ summary.style.display='none'; fw.style.display='none'; submitBtn.disabled=false; return; }
-
     const s=timeToMinutes(time);
     const endMin=s+selectedDuration;
     const exceedsClose = endMin>closingMinutes();
     const beforeOpen = s<openingMinutes();
-    const occupied = !isSlotAvailable(mid, selectedDate, time, addMinutes(time,30)); // занято хотя бы на 30 мин
+    const occupied = !isSlotAvailable(mid, selectedDate, time, addMinutes(time,30));
     const maxFit = occupied ? 0 : getMaxFit(mid, selectedDate, time);
     const until = getFreeUntil(mid, selectedDate, time);
-
-    // окно свободы
     fw.style.display='block';
-    if (beforeOpen){
-      fw.className='free-window bad';
-      fw.textContent=`⛔ ${t('errTime',{advance:config.maxAdvanceHours})}`;
-    } else if (occupied){
-      fw.className='free-window bad';
-      fw.textContent=`⛔ ${t('errBusy')}`;
-    } else if (exceedsClose){
-      fw.className='free-window bad';
-      fw.textContent=t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
-    } else {
-      fw.className='free-window';
-      fw.textContent=t('freeUntil',{until, max:maxFit});
-    }
-
-    // summary
+    if (beforeOpen){ fw.className='free-window bad'; fw.textContent=`⛔ ${t('errTime',{advance:config.maxAdvanceHours})}`; }
+    else if (occupied){ fw.className='free-window bad'; fw.textContent=`⛔ ${t('errBusy')}`; }
+    else if (exceedsClose){ fw.className='free-window bad'; fw.textContent=t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour}); }
+    else { fw.className='free-window'; fw.textContent=t('freeUntil',{until, max:maxFit}); }
     summary.style.display='block';
     if (exceedsClose || beforeOpen || occupied){
       summary.className='summary-box bad';
       summary.textContent = occupied ? t('errBusy') : t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
       submitBtn.disabled=true;
     } else if (selectedDuration>maxFit){
-      summary.className='summary-box bad';
-      summary.textContent=t('tooLong',{max:maxFit});
-      submitBtn.disabled=true;
+      summary.className='summary-box bad'; summary.textContent=t('tooLong',{max:maxFit}); submitBtn.disabled=true;
     } else {
       summary.className='summary-box ok';
       summary.textContent=`${time} — ${minutesToTime(endMin)} • ${selectedDuration} ${t('min')}`;
       submitBtn.disabled=false;
     }
-
-    // недельный лимит
     const limitInfo=document.getElementById('weeklyLimitInfo');
     if (ln&&fn){
-      const used=getWeeklyUsage(deviceId);
+      const nk=nameKey(ln,fn);
+      const used=getWeeklyUsage(nk);
       const remaining=Math.max(0,config.weeklyLimit-used);
       limitInfo.style.display='block';
       if (remaining<selectedDuration){
@@ -767,23 +874,16 @@
     const endTime=addMinutes(time,selectedDuration);
     if (!isSlotAvailable(pendingBooking.machineId,selectedDate,time,endTime)) return alert(t('errBusy'));
 
-    // ===== ЗАЩИТА: одно устройство = одно имя =====
-    const nk = nameKey(ln,fn);
-    const bind = deviceBindings[deviceId];
-    const reg = userRegistry[nk];
-    if (bind && bind.nameKey !== nk) return alert(t('deviceBound',{name:`${bind.lastName} ${bind.firstName}`}));
-    if (!bind && reg && reg.deviceId && reg.deviceId !== deviceId) return alert(t('errNameTaken'));
-    const weekOwner = ownerFromWeekBookings(ln,fn);
-    if (weekOwner && weekOwner !== deviceId) return alert(t('errNameTaken'));
-    try{
-      if (!bind) await set(ref(db,`deviceBindings/${deviceId}`),{lastName:ln,firstName:fn,nameKey:nk,boundAt:Date.now()});
-      if (!reg || reg.deviceId !== deviceId) await set(ref(db,`userRegistry/${nk}`),{deviceId,lastName:ln,firstName:fn,claimedAt:Date.now()});
-    }catch(e){ return alert('Error: '+e.message); }
+    const nk=nameKey(ln,fn);
+    if (hasActiveSession(nk)) return doCreateBooking(nk,ln,fn,time,endTime);
+    const u=findAllowedByNameKey(nk);
+    openPinModal(nk, u&&u.pinHash, ln, fn, ()=>doCreateBooking(nk,ln,fn,time,endTime));
+  };
 
-    const dev = deviceId;
-    const weekly=getWeeklyUsage(dev);
+  async function doCreateBooking(nk,ln,fn,time,endTime){
+    const weekly=getWeeklyUsage(nk);
     if (weekly+selectedDuration>config.weeklyLimit) return alert(t('errWeeklyLimit',{used:weekly,weekly:config.weeklyLimit,weeklyH:+(config.weeklyLimit/60).toFixed(1)}));
-    const dayB=Object.values(bookings).filter(b=>b.date===selectedDate&&b.deviceId===dev);
+    const dayB=Object.values(bookings).filter(b=>b.date===selectedDate&&bookingNameKey(b)===nk);
     const uniq=new Set(dayB.map(b=>b.machineId)).size;
     const already=dayB.some(b=>b.machineId===pendingBooking.machineId);
     if (uniq>=config.dailyMachinesLimit&&!already) return alert(t('errLimit1',{dailyMachines:config.dailyMachinesLimit}));
@@ -791,23 +891,32 @@
     if (mTot+selectedDuration>config.perMachineDailyLimit) return alert(t('errLimit2',{perMachineH:+(config.perMachineDailyLimit/60).toFixed(1)}));
 
     const key=`${pendingBooking.machineId}|${selectedDate}|${time}`;
-    const newBooking={machineId:pendingBooking.machineId,lastName:ln,firstName:fn,date:selectedDate,startTime:time,endTime,duration:selectedDuration,deviceId:dev,createdAt:Date.now()};
+    const newBooking={machineId:pendingBooking.machineId,lastName:ln,firstName:fn,nameKey:nk,date:selectedDate,startTime:time,endTime,duration:selectedDuration,createdAt:Date.now()};
     try{
-      const res = await runTransaction(ref(db,`bookings/${key}`), (cur)=>{
-        if (cur !== null) return; // слот занят — отмена
-        return newBooking;
-      });
+      const res = await runTransaction(ref(db,`bookings/${key}`), (cur)=>{ if (cur!==null) return; return newBooking; });
       if (!res.committed) return alert(t('errBusy'));
       localStorage.setItem('laundry_ln',ln); localStorage.setItem('laundry_fn',fn);
+      setLastIdentity(nk,ln,fn);
       closeModal('bookModal');
     }catch(e){alert('Error: '+e.message);}
-  };
+  }
 
   const doCancel = async (key)=>{
     const b=bookings[key]; if(!b) return;
-    if (!isAdmin && b.deviceId!==deviceId) return alert(t('errCancel'));
-    if (!confirm(t('confirmCancel'))) return;
-    try{ await remove(ref(db,`bookings/${key}`)); }catch(e){alert('Error: '+e.message);}
+    if (isAdmin){ if(!confirm(t('confirmCancel')))return; try{ await remove(ref(db,`bookings/${key}`)); }catch(e){alert('Error: '+e.message);} return; }
+    const li=getLastIdentity();
+    const nk=bookingNameKey(b);
+    if (!li || li.nameKey!==nk) return alert(t('errCancel'));
+    if (hasActiveSession(nk)){
+      if(!confirm(t('confirmCancel')))return;
+      try{ await remove(ref(db,`bookings/${key}`)); }catch(e){alert('Error: '+e.message);}
+      return;
+    }
+    const u=findAllowedByNameKey(nk);
+    openPinModal(nk, u&&u.pinHash, b.lastName, b.firstName, async ()=>{
+      if(!confirm(t('confirmCancel')))return;
+      try{ await remove(ref(db,`bookings/${key}`)); }catch(e){alert('Error: '+e.message);}
+    });
   };
 
   window.setMachineStatus = async (mid,status,comment)=>{
@@ -815,11 +924,7 @@
     catch(e){alert('Error: '+e.message);}
   };
 
-  window.saveSetting = (field,value)=>{
-    const num=parseInt(value,10);
-    if (isNaN(num)) return;
-    config[field]=num;
-  };
+  window.saveSetting = (field,value)=>{ const num=parseInt(value,10); if(!isNaN(num)) config[field]=num; };
   const validateConfig = (c) => {
     const errs=[];
     if (!(c.openHour>=0&&c.openHour<=23)) errs.push('Открытие: 0–23');
@@ -840,19 +945,13 @@
   };
   window.resetSettings = ()=>{ config={...DEFAULT_CONFIG}; render(); };
 
-  window.updateMachineField = (id, field, value)=>{
-    const m=machinesList.find(x=>x.id===id); if(!m) return;
-    m[field]=value;
-  };
+  window.updateMachineField = (id, field, value)=>{ const m=machinesList.find(x=>x.id===id); if(m) m[field]=value; };
   window.saveMachine = async (id)=>{
-    const m=machinesList.find(x=>x.id===id); if(!m) return;
-    if (!m.name.trim()) return;
-    try{ await set(ref(db,`machines/${id}`),{name:m.name.trim(),floor:(m.floor||'').trim(),active:!!m.active}); showToast(t('machineSaved')); }
-    catch(e){alert('Error: '+e.message);}
+    const m=machinesList.find(x=>x.id===id); if(!m||!m.name.trim()) return;
+    try{ await set(ref(db,`machines/${id}`),{name:m.name.trim(),floor:(m.floor||'').trim(),active:!!m.active}); showToast(t('machineSaved')); }catch(e){alert('Error: '+e.message);}
   };
   window.toggleMachineActive = async (id)=>{
-    const m=machinesList.find(x=>x.id===id); if(!m) return;
-    m.active=!m.active;
+    const m=machinesList.find(x=>x.id===id); if(!m) return; m.active=!m.active;
     try{ await set(ref(db,`machines/${id}/active`), m.active); render(); }catch(e){alert('Error: '+e.message);}
   };
   window.deleteMachine = async (id)=>{
@@ -863,13 +962,8 @@
     const name=document.getElementById('newMachineName').value.trim();
     const floor=document.getElementById('newMachineFloor').value.trim();
     if (!name) return;
-    const maxId=machinesList.reduce((mx,m)=>Math.max(mx,m.id),0);
-    const newId=maxId+1;
-    try{
-      await set(ref(db,`machines/${newId}`),{name,floor,active:true});
-      document.getElementById('newMachineName').value=''; document.getElementById('newMachineFloor').value='';
-      showToast(t('machineSaved'));
-    }catch(e){alert('Error: '+e.message);}
+    const newId=machinesList.reduce((mx,m)=>Math.max(mx,m.id),0)+1;
+    try{ await set(ref(db,`machines/${newId}`),{name,floor,active:true}); document.getElementById('newMachineName').value=''; document.getElementById('newMachineFloor').value=''; showToast(t('machineSaved')); }catch(e){alert('Error: '+e.message);}
   };
 
   window.usersSearchInput = (v)=>{ usersSearch=v; render(); };
@@ -878,10 +972,15 @@
   window.addAllowedUser = async ()=>{
     const ln=document.getElementById('newULastName').value.trim();
     const fn=document.getElementById('newUFirstName').value.trim();
+    const pin=document.getElementById('newUPin').value.trim();
     if (!ln||!fn) return;
+    if (!/^\d{6}$/.test(pin)) return alert(t('pinLen'));
+    if (isWeakPin(pin)) return alert(t('pinWeak'));
+    let hash; try{ hash=await sha256(pin); }catch{ return alert(t('insecureCtx')); }
+    if (findDuplicatePinHash(null, hash)) return alert(t('pinDup'));
     try{
-      await push(ref(db,'allowedUsers'),{fullName:`${ln} ${fn}`,lastName:ln,firstName:fn,addedAt:Date.now()});
-      document.getElementById('newULastName').value=''; document.getElementById('newUFirstName').value='';
+      await push(ref(db,'allowedUsers'),{fullName:`${ln} ${fn}`,lastName:ln,firstName:fn,pinHash:hash,addedAt:Date.now()});
+      document.getElementById('newULastName').value=''; document.getElementById('newUFirstName').value=''; document.getElementById('newUPin').value='';
       showToast(t('added'));
     }catch(e){alert('Error: '+e.message);}
   };
@@ -889,15 +988,27 @@
     if (!confirm(t('confirmCancel'))) return;
     try{ await remove(ref(db,`allowedUsers/${uid}`)); showToast(t('removed')); }catch(e){alert('Error: '+e.message);}
   };
-  // сброс привязки чистит ОБА индекса
-  window.resetBind = async (nk)=>{
-    if (!confirm(t('confirmCancel'))) return;
+  let adminPinUid=null;
+  window.adminResetPin = (uid, ln, fn)=>{
+    adminPinUid=uid;
+    document.getElementById('adminPinWho').textContent=`${ln} ${fn}`;
+    document.getElementById('adminPinInput').value='';
+    document.getElementById('adminPinError').textContent='';
+    document.getElementById('adminPinModal').classList.add('active');
+    setTimeout(()=>document.getElementById('adminPinInput').focus(),100);
+  };
+  window.submitAdminPin = async ()=>{
+    if (!adminPinUid) return;
+    const val=document.getElementById('adminPinInput').value.trim();
+    const errEl=document.getElementById('adminPinError');
+    if (!/^\d{6}$/.test(val)){ errEl.textContent=t('pinLen'); return; }
+    if (isWeakPin(val)){ errEl.textContent=t('pinWeak'); return; }
+    let hash; try{ hash=await sha256(val); }catch{ errEl.textContent=t('insecureCtx'); return; }
+    const dup=findDuplicatePinHash(adminPinUid, hash);
+    if (dup){ errEl.textContent=t('pinDup'); return; }
     try{
-      const reg = userRegistry[nk];
-      const devId = reg && reg.deviceId;
-      await remove(ref(db,`userRegistry/${nk}`));
-      if (devId) await remove(ref(db,`deviceBindings/${devId}`));
-      showToast(t('bindReset'));
+      await set(ref(db,`allowedUsers/${adminPinUid}/pinHash`), hash);
+      adminPinUid=null; closeModal('adminPinModal'); showToast(t('pinSaved'));
     }catch(e){alert('Error: '+e.message);}
   };
 
@@ -913,6 +1024,10 @@
     else if (usersSort==='lastNameDesc') arr.sort((a,b)=>collator.compare(b.lastName||'',a.lastName||''));
     else arr.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
     return arr;
+  };
+  const lastActivityByNameKey = (nk)=>{
+    let mx=0; for (const b of Object.values(bookings)) if (bookingNameKey(b)===nk) mx=Math.max(mx,b.createdAt||0);
+    return mx;
   };
 
   const renderTimelineBar = (machineId, mb)=>{
@@ -936,13 +1051,19 @@
     </div>`;
   };
 
+  const renderVerifiedBanner = ()=>{
+    const li=getLastIdentity(); if(!li) return '';
+    const active=hasActiveSession(li.nameKey);
+    const who=`${escapeHtml(li.lastName)} ${escapeHtml(li.firstName)}`;
+    if (active) return `<div class="verified-banner">✅ ${t('verifiedAs')} <span class="vb-who">${who}</span><button onclick="window.logoutVer()">${t('logoutVer')}</button></div>`;
+    return `<div class="verified-banner" style="background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-border)">⏳ ${who} — ${t('pinSessionExpired')}<button onclick="window.logoutVer()">${t('logoutVer')}</button></div>`;
+  };
+
   const renderNextSlotBadge = ()=>{
-    const mine=Object.values(bookings).filter(b=>b.deviceId===deviceId && getBookingStatus(b)!=='past');
+    const li=getLastIdentity(); if(!li) return '';
+    const mine=Object.values(bookings).filter(b=>bookingNameKey(b)===li.nameKey && getBookingStatus(b)!=='past');
     if (!mine.length) return '';
-    mine.sort((a,b)=>{
-      const da=new Date(a.date+'T'+a.startTime), db=new Date(b.date+'T'+b.startTime);
-      return da-db;
-    });
+    mine.sort((a,b)=>{ const da=new Date(a.date+'T'+a.startTime), db=new Date(b.date+'T'+b.startTime); return da-db; });
     const nb=mine[0];
     const m=machinesList.find(x=>x.id===nb.machineId);
     const st=getBookingStatus(nb);
@@ -955,6 +1076,8 @@
       </div>
     </div>`;
   };
+
+  const isMyBooking = (b)=>{ const li=getLastIdentity(); return !!li && bookingNameKey(b)===li.nameKey; };
 
   const render = ()=>{
     const appEl=document.getElementById('app');
@@ -970,6 +1093,7 @@
     if (currentView==='settings' && isAdmin){ appEl.innerHTML=html+renderSettings(); return; }
     if (currentView==='list' && isAdmin){ appEl.innerHTML=html+renderList(); return; }
 
+    html += renderVerifiedBanner();
     html += renderNextSlotBadge();
 
     if (currentView==='machines'){
@@ -988,7 +1112,7 @@
         html+=`<div class="timeline"><div class="timeline-title">${t('scheduleTitle')}</div>`;
         if (mb.length===0) html+=`<div style="text-align:center;color:var(--text-secondary);padding:10px;font-style:italic">${t('allDayFree')}</div>`;
         else mb.forEach(b=>{
-          const bs=getBookingStatus(b); const isMine=b.deviceId===deviceId;
+          const bs=getBookingStatus(b); const mine=isMyBooking(b);
           const txt=bs==='active'?t('active'):(bs==='past'?t('past'):t('future'));
           const cd = bs==='active' ? `<span class="tl-countdown">${t('remaining',{n:minutesLeft(b)})}</span>` : '';
           html+=`<div class="timeline-item status-${bs}">
@@ -996,7 +1120,7 @@
             <span class="tl-name">${escapeHtml(b.lastName)} ${escapeHtml(b.firstName.charAt(0))}.</span>
             ${cd}
             <span class="tl-status">${txt}</span>
-            ${(isAdmin||(isMine&&bs!=='past'))?`<button class="btn-cancel-small js-cancel" data-cancel-key="${escapeHtml(b.key)}">${t('cancel')}</button>`:''}
+            ${(isAdmin||(mine&&bs!=='past'))?`<button class="btn-cancel-small js-cancel" data-cancel-key="${escapeHtml(b.key)}">${t('cancel')}</button>`:''}
           </div>`;
         });
         html+=`</div><button class="btn-book" onclick="window.openBookModal(${machine.id})" ${isBroken?'disabled':''}>📅 ${t('book')}</button></div>`;
@@ -1016,8 +1140,9 @@
           const booking=allBookings.find(b=>b.machineId===machine.id&&b.date===selectedDate&&
             timeToMinutes(time)>=timeToMinutes(b.startTime)&&timeToMinutes(time)<timeToMinutes(b.endTime));
           if (booking){
-            const bs=getBookingStatus(booking); const isMine=booking.deviceId===deviceId;
-            html+=`<td><button class="slot-btn booked-${bs} ${(isAdmin||(isMine&&bs!=='past'))?'js-cancel':''}" ${((isAdmin||(isMine&&bs!=='past'))?`data-cancel-key="${escapeHtml(booking.key)}"`:'')} title="${escapeHtml(booking.lastName)} ${escapeHtml(booking.firstName)} • ${booking.startTime}–${booking.endTime}"><span>${escapeHtml(booking.lastName)}</span></button></td>`;
+            const bs=getBookingStatus(booking); const mine=isMyBooking(booking);
+            const canCancel = isAdmin||(mine&&bs!=='past');
+            html+=`<td><button class="slot-btn booked-${bs}${canCancel?' js-cancel':''}" ${canCancel?`data-cancel-key="${escapeHtml(booking.key)}"`:''} title="${escapeHtml(booking.lastName)} ${escapeHtml(booking.firstName)} • ${booking.startTime}–${booking.endTime}"><span>${escapeHtml(booking.lastName)}</span></button></td>`;
           } else {
             const allowed=isSlotAllowed(selectedDate,time)&&canFinishByClosing(time,30);
             html+=allowed
@@ -1056,26 +1181,19 @@
       <h4 style="margin-top:24px">${t('setLimits')}</h4>
       <div class="settings-grid">
         <div class="setting-item"><label>${t('setOpen')}</label>
-          <input type="number" min="0" max="23" value="${config.openHour}" onchange="window.saveSetting('openHour',this.value)">
-          <div class="setting-hint">0–23</div></div>
+          <input type="number" min="0" max="23" value="${config.openHour}" onchange="window.saveSetting('openHour',this.value)"><div class="setting-hint">0–23</div></div>
         <div class="setting-item"><label>${t('setClose')}</label>
-          <input type="number" min="1" max="24" value="${config.closeHour}" onchange="window.saveSetting('closeHour',this.value)">
-          <div class="setting-hint">1–24</div></div>
+          <input type="number" min="1" max="24" value="${config.closeHour}" onchange="window.saveSetting('closeHour',this.value)"><div class="setting-hint">1–24</div></div>
         <div class="setting-item"><label>${t('setDailyMachines')}</label>
-          <input type="number" min="1" max="${Math.max(1,machinesList.filter(m=>m.active).length)}" value="${config.dailyMachinesLimit}" onchange="window.saveSetting('dailyMachinesLimit',this.value)">
-          <div class="setting-hint">1–${Math.max(1,machinesList.filter(m=>m.active).length)}</div></div>
+          <input type="number" min="1" max="${Math.max(1,machinesList.filter(m=>m.active).length)}" value="${config.dailyMachinesLimit}" onchange="window.saveSetting('dailyMachinesLimit',this.value)"><div class="setting-hint">1–${Math.max(1,machinesList.filter(m=>m.active).length)}</div></div>
         <div class="setting-item"><label>${t('setPerMachine')}</label>
-          <input type="number" min="30" max="1440" step="30" value="${config.perMachineDailyLimit}" onchange="window.saveSetting('perMachineDailyLimit',this.value)">
-          <div class="setting-hint">≈ ${(config.perMachineDailyLimit/60).toFixed(1)} ч</div></div>
+          <input type="number" min="30" max="1440" step="30" value="${config.perMachineDailyLimit}" onchange="window.saveSetting('perMachineDailyLimit',this.value)"><div class="setting-hint">≈ ${(config.perMachineDailyLimit/60).toFixed(1)} ч</div></div>
         <div class="setting-item"><label>${t('setWeekly')}</label>
-          <input type="number" min="30" max="10080" step="30" value="${config.weeklyLimit}" onchange="window.saveSetting('weeklyLimit',this.value)">
-          <div class="setting-hint">≈ ${(config.weeklyLimit/60).toFixed(1)} ч</div></div>
+          <input type="number" min="30" max="10080" step="30" value="${config.weeklyLimit}" onchange="window.saveSetting('weeklyLimit',this.value)"><div class="setting-hint">≈ ${(config.weeklyLimit/60).toFixed(1)} ч</div></div>
         <div class="setting-item"><label>${t('setAdvance')}</label>
-          <input type="number" min="1" max="168" value="${config.maxAdvanceHours}" onchange="window.saveSetting('maxAdvanceHours',this.value)">
-          <div class="setting-hint">1–168 ч</div></div>
+          <input type="number" min="1" max="168" value="${config.maxAdvanceHours}" onchange="window.saveSetting('maxAdvanceHours',this.value)"><div class="setting-hint">1–168 ч</div></div>
         <div class="setting-item"><label>${t('setCleanup')}</label>
-          <input type="number" min="0" max="168" value="${config.cleanupDelayHours}" onchange="window.saveSetting('cleanupDelayHours',this.value)">
-          <div class="setting-hint">0–168 ч</div></div>
+          <input type="number" min="0" max="168" value="${config.cleanupDelayHours}" onchange="window.saveSetting('cleanupDelayHours',this.value)"><div class="setting-hint">0–168 ч</div></div>
       </div>
       <div class="settings-actions">
         <button class="btn-save" onclick="window.saveSettings()">💾 ${t('save')}</button>
@@ -1102,15 +1220,15 @@
         if (usersSort==='lastNameAsc' && L!==curLetter){ curLetter=L; rows+=`<div class="letter-header">${L}</div>`; }
         const added=u.addedAt?new Date(u.addedAt).toLocaleDateString(currentLang==='ru'?'ru-RU':currentLang==='zh'?'zh-CN':'en-US'):'';
         const nk=nameKey(u.lastName,u.firstName);
-        const reg=userRegistry[nk];
-        const bound=!!(reg&&reg.deviceId);
-        const devShort = bound ? (reg.deviceId||'').replace('dev_','').slice(0,6) : '';
+        const la=lastActivityByNameKey(nk);
+        const laStr=la?new Date(la).toLocaleDateString(currentLang==='ru'?'ru-RU':currentLang==='zh'?'zh-CN':'en-US'):'';
+        const hasPin=!!u.pinHash;
         rows+=`<div class="user-row">
           <div><div class="user-name">${escapeHtml(u.lastName)} ${escapeHtml(u.firstName)}
-            <span class="bind-chip ${bound?'bound':'unbound'}">${bound?t('bound'):t('unbound')}${bound?` · ${t('bindTo')} ${escapeHtml(devShort)}`:''}</span></div>
-          ${added?`<div class="user-meta">${t('addedOn')} ${added}</div>`:''}</div>
+            <span class="bind-chip ${hasPin?'ok':'warn'}">${hasPin?t('pinSet'):t('pinMissing')}</span></div>
+          <div class="user-meta">${added?`${t('addedOn')} ${added}`:''}${laStr?` · ${t('lastSeen')} ${laStr}`:''}</div></div>
           <div class="user-actions">
-            ${bound?`<button class="btn-mini js-reset-bind" data-nk="${escapeHtml(nk)}">${t('resetBind')}</button>`:''}
+            <button class="btn-mini js-admin-pin" data-uid="${escapeHtml(u.id)}" data-ln="${escapeHtml(u.lastName)}" data-fn="${escapeHtml(u.firstName)}">${t('resetPin')}</button>
             <button class="btn-mini danger js-remove-user" data-uid="${escapeHtml(u.id)}">${t('cancel')}</button>
           </div>
         </div>`;
@@ -1130,6 +1248,10 @@
         <div class="add-user-bar">
           <input type="text" id="newULastName" placeholder="${t('lastName')}">
           <input type="text" id="newUFirstName" placeholder="${t('firstName')}">
+          <div class="pin-with-gen">
+            <input type="tel" id="newUPin" inputmode="numeric" maxlength="6" placeholder="PIN 6">
+            <button type="button" class="btn-gen" title="Случайный PIN" onclick="window.genPinInto('newUPin')">🎲</button>
+          </div>
           <button class="btn-add-user" onclick="window.addAllowedUser()">${t('addNew')}</button>
         </div>
       </div>
@@ -1141,14 +1263,16 @@
     if (qs){ const tm=qs.getAttribute('data-qs-time'); document.getElementById('bookTime').value=tm; pendingBooking.time=tm; updateBookingUI(); return; }
     const cancel=e.target.closest('[data-cancel-key]');
     if (cancel){ doCancel(cancel.getAttribute('data-cancel-key')); return; }
+    const ap=e.target.closest('[data-ln]');
+    if (ap && ap.classList.contains('js-admin-pin')){ window.adminResetPin(ap.getAttribute('data-uid'), ap.getAttribute('data-ln'), ap.getAttribute('data-fn')); return; }
     const rmUser=e.target.closest('[data-uid]');
-    if (rmUser){ window.removeAllowedUser(rmUser.getAttribute('data-uid')); return; }
-    const rb=e.target.closest('[data-nk]');
-    if (rb){ window.resetBind(rb.getAttribute('data-nk')); return; }
+    if (rmUser && rmUser.classList.contains('js-remove-user')){ window.removeAllowedUser(rmUser.getAttribute('data-uid')); return; }
     const dm=e.target.closest('[data-machine-id]');
     if (dm){ window.deleteMachine(Number(dm.getAttribute('data-machine-id'))); return; }
   });
-  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeModal('bookModal'); closeModal('adminLoginModal'); } });
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeModal('bookModal'); closeModal('adminLoginModal'); closeModal('pinModal'); closeModal('adminPinModal'); } });
+  document.getElementById('pinInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') submitPin(); });
+  document.getElementById('adminPinInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') submitAdminPin(); });
 
   function applyTranslations(){
     document.getElementById('appTitle').textContent=t('title');
@@ -1164,6 +1288,12 @@
     document.querySelector('.t-lastName').textContent=t('lastName');
     document.querySelector('.t-firstName').textContent=t('firstName');
     document.querySelector('.t-book').textContent=t('book');
+    document.querySelector('.t-pinTitle').textContent=t('pinTitle');
+    document.querySelector('.t-pinLabel').textContent=t('pinLabel');
+    document.querySelector('.t-pinVerify').textContent=t('pinVerify');
+    document.querySelector('.t-adminPinTitle').textContent=t('adminPinTitle');
+    document.querySelector('.t-newPin').textContent=t('newPin');
+    document.querySelector('.t-savePin').textContent=t('savePin');
     document.querySelector('.t-adminLogin').textContent=t('adminLogin');
     document.querySelector('.t-password').textContent=t('password');
     document.querySelector('.t-login').textContent=t('login');
@@ -1176,8 +1306,6 @@
   onValue(bookingsRef,(s)=>{ bookings=s.val()||{}; cleanupOldBookings(); render(); });
   onValue(machineStatusRef,(s)=>{ machineStatuses=s.val()||{}; render(); });
   onValue(allowedUsersRef,(s)=>{ allowedUsers=s.val()||{}; render(); });
-  onValue(userRegistryRef,(s)=>{ userRegistry=s.val()||{}; render(); });
-  onValue(deviceBindingsRef,(s)=>{ deviceBindings=s.val()||{}; render(); });
   onValue(machinesRef,(s)=>{
     const v=s.val();
     if (!v || Object.keys(v).length===0){
