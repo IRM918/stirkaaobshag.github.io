@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Стиралки Общежития</title>
+<style>
+  :root {
+    --primary:#4f46e5; --primary-hover:#4338ca;
+    --bg:#f8fafc; --card:#fff; --text:#0f172a; --text-secondary:#64748b;
+    --border:#e2e8f0; --input-bg:#f8fafc;
+    --free-bg:#f0fdf4; --free-text:#15803d; --free-border:#86efac;
+    --busy-bg:#fef2f2; --busy-text:#b91c1c; --busy-border:#fca5a5;
+    --active-bg:#dcfce7; --active-text:#166534; --active-border:#4ade80;
+    --past-bg:#f1f5f9; --past-text:#94a3b8;
+    --warn-bg:#fffbeb; --warn-text:#b45309; --warn-border:#fcd34d;
+    --broken-bg:#fef2f2; --broken-text:#991b1b; --broken-border:#fca5a5;
+    --admin-bg:#fef3c7; --admin-text:#92400e; --admin-border:#fcd34d;
+    --limit-bg:#fef3c7; --limit-text:#92400e; --limit-border:#fcd34d;
+  }
+  body.dark {
+    --bg:#0f172a; --card:#1e293b; --text:#f8fafc; --text-secondary:#94a3b8;
+    --border:#334155; --input-bg:#334155;
+    --free-bg:#064e3b; --free-text:#6ee7b7; --free-border:#059669;
+    --busy-bg:#7f1d1d; --busy-text:#fca5a5; --busy-border:#dc2626;
+    --active-bg:#14532d; --active-text:#86efac; --active-border:#22c55e;
+    --past-bg:#334155; --past-text:#64748b;
+    --warn-bg:#422006; --warn-text:#fcd34d; --warn-border:#d97706;
+    --broken-bg:#450a0a; --broken-text:#fca5a5; --broken-border:#dc2626;
+    --admin-bg:#451a03; --admin-text:#fcd34d; --admin-border:#d97706;
+    --limit-bg:#451a03; --limit-text:#fcd34d; --limit-border:#d97706;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding-bottom:40px; transition:background .3s,color .3s; }
+  .header { background:var(--card); border-bottom:1px solid var(--border); padding:12px 16px; position:sticky; top:0; z-index:50; }
+  .header-inner { max-width:800px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-icon { font-size:28px; }
+  .logo-text h1 { font-size:18px; font-weight:700; }
+  .logo-text p { font-size:12px; color:var(--text-secondary); }
+  .header-controls { display:flex; align-items:center; gap:8px; }
+  .lang-select,.admin-btn { padding:6px 10px; border-radius:8px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-size:13px; font-weight:600; cursor:pointer; }
+  .admin-btn.active { background:var(--admin-bg); color:var(--admin-text); border-color:var(--admin-border); }
+  .theme-toggle { width:36px; height:36px; border-radius:8px; border:1px solid var(--border); background:var(--input-bg); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .view-toggle { display:flex; gap:4px; background:var(--input-bg); padding:4px; border-radius:10px; width:100%; margin-top:8px; flex-wrap:wrap; }
+  .view-btn { flex:1; min-width:84px; padding:8px 10px; border-radius:8px; border:none; background:transparent; font-size:13px; font-weight:600; color:var(--text-secondary); cursor:pointer; }
+  .view-btn.active { background:var(--card); color:var(--primary); box-shadow:0 1px 3px rgba(0,0,0,.1); }
+  .container { max-width:800px; margin:0 auto; padding:16px; }
+  .date-selector { display:flex; align-items:center; gap:12px; margin-bottom:16px; background:var(--card); padding:12px 16px; border-radius:12px; border:1px solid var(--border); flex-wrap:wrap; }
+  .date-selector label { font-size:14px; font-weight:600; color:var(--text-secondary); }
+  .date-selector input { padding:8px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; background:var(--input-bg); color:var(--text); }
+  .rules-hint { background:var(--warn-bg); color:var(--warn-text); padding:10px 14px; border-radius:10px; font-size:13px; text-align:center; margin-bottom:16px; border:1px solid var(--warn-border); line-height:1.4; }
+  .next-slot { background:var(--primary); color:#fff; padding:12px 16px; border-radius:12px; font-size:14px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:10px; box-shadow:0 4px 12px rgba(79,70,229,.25); }
+  .next-slot .ns-icon { font-size:22px; }
+  .next-slot .ns-sub { font-weight:400; opacity:.85; font-size:12px; }
+  .limit-info { padding:10px 14px; border-radius:10px; font-size:13px; text-align:center; margin-bottom:12px; border:1px solid var(--limit-border); background:var(--limit-bg); color:var(--limit-text); font-weight:600; }
+  .machines-list { display:grid; gap:16px; }
+  .machine-card { background:var(--card); border-radius:16px; padding:20px; border:2px solid var(--border); transition:all .3s; }
+  .machine-card.broken { background:var(--broken-bg); border-color:var(--broken-border); opacity:.85; }
+  .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:8px; flex-wrap:wrap; }
+  .machine-info { display:flex; gap:12px; align-items:center; }
+  .machine-icon { font-size:32px; }
+  .machine-name { font-size:18px; font-weight:700; }
+  .machine-floor { font-size:13px; color:var(--text-secondary); }
+  .status-badge { padding:6px 12px; border-radius:20px; font-size:12px; font-weight:700; text-transform:uppercase; }
+  .status-badge.working { background:var(--free-bg); color:var(--free-text); }
+  .status-badge.broken { background:var(--broken-bg); color:var(--broken-text); }
+  .broken-notice { background:var(--broken-bg); border:1px solid var(--broken-border); border-radius:12px; padding:12px; margin-bottom:14px; color:var(--broken-text); font-size:14px; }
+  .broken-notice strong { display:block; margin-bottom:4px; }
+
+  /* Лента времени */
+  .tlbar-wrap { margin-bottom:14px; }
+  .tlbar-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--text-secondary); margin-bottom:4px; font-variant-numeric:tabular-nums; }
+  .tlbar { position:relative; height:26px; background:var(--free-bg); border:1px solid var(--free-border); border-radius:8px; overflow:hidden; }
+  .tlbar-now { position:absolute; top:-2px; bottom:-2px; width:2px; background:var(--primary); z-index:5; box-shadow:0 0 0 1px rgba(255,255,255,.6); }
+  .tlbar-now::after { content:''; position:absolute; top:-3px; left:-3px; width:8px; height:8px; border-radius:50%; background:var(--primary); }
+  .tlbar-seg { position:absolute; top:2px; bottom:2px; border-radius:5px; font-size:9px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; white-space:nowrap; padding:0 3px; }
+  .tlbar-seg.s-active { background:var(--active-text); }
+  .tlbar-seg.s-future { background:var(--busy-text); }
+  .tlbar-seg.s-past { background:var(--past-text); opacity:.6; }
+
+  .timeline { background:var(--input-bg); border-radius:12px; padding:12px; margin-bottom:14px; max-height:200px; overflow-y:auto; }
+  .timeline-title { font-size:12px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; margin-bottom:8px; }
+  .timeline-item { display:flex; align-items:center; padding:8px; border-radius:8px; margin-bottom:6px; font-size:14px; gap:8px; flex-wrap:wrap; }
+  .timeline-item:last-child { margin-bottom:0; }
+  .timeline-item.status-active { background:var(--active-bg); border:1px solid var(--active-border); }
+  .timeline-item.status-past { background:var(--past-bg); opacity:.7; }
+  .timeline-item.status-future { background:var(--card); border:1px solid var(--border); }
+  .tl-time { font-weight:700; min-width:110px; font-variant-numeric:tabular-nums; }
+  .tl-name { flex:1; font-weight:500; min-width:80px; }
+  .tl-countdown { font-size:11px; font-weight:700; color:var(--active-text); background:var(--active-bg); padding:2px 8px; border-radius:12px; white-space:nowrap; }
+  .tl-status { font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; white-space:nowrap; }
+  .status-active .tl-status { background:var(--active-text); color:var(--active-bg); }
+  .status-past .tl-status { background:var(--past-text); color:var(--past-bg); }
+  .status-future .tl-status { background:var(--primary); color:white; }
+  .btn-cancel-small { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); padding:4px 10px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
+  .btn-book { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; }
+  .btn-book:disabled { background:var(--past-bg); color:var(--past-text); cursor:not-allowed; }
+
+  .schedule-container { background:var(--card); border-radius:16px; border:1px solid var(--border); overflow:hidden; margin-bottom:20px; }
+  .schedule-scroll { overflow:auto; max-height:600px; }
+  .schedule-table { width:100%; min-width:500px; border-collapse:collapse; }
+  .schedule-table th { padding:10px 4px; text-align:center; font-size:12px; font-weight:600; color:var(--text-secondary); background:var(--input-bg); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
+  .schedule-table th .th-icon { font-size:20px; display:block; margin-bottom:2px; }
+  .schedule-table th.time-head { left:0; z-index:11; }
+  .schedule-table td { padding:2px; text-align:center; border-bottom:1px solid var(--border); }
+  .schedule-table td.time-cell { position:sticky; left:0; background:var(--card); z-index:5; }
+  .time-cell { font-size:11px; font-weight:600; color:var(--text-secondary); text-align:right; padding-right:8px; white-space:nowrap; width:50px; }
+  .slot-btn { width:100%; height:28px; border-radius:6px; border:none; font-size:10px; font-weight:600; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1; }
+  .slot-btn.free { background:var(--free-bg); color:var(--free-text); border:1px solid var(--free-border); }
+  .slot-btn.disabled { background:var(--past-bg); color:var(--past-text); cursor:not-allowed; border:1px solid var(--border); }
+  .slot-btn.broken { background:var(--broken-bg); color:var(--broken-text); border:1px solid var(--broken-border); cursor:not-allowed; }
+  .slot-btn.booked-active { background:var(--active-bg); color:var(--active-text); border:1px solid var(--active-border); animation:pulse 2s infinite; }
+  .slot-btn.booked-future { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); }
+  .slot-btn.booked-past { background:var(--past-bg); color:var(--past-text); border:1px solid var(--border); opacity:.6; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(4px); z-index:1000; align-items:flex-end; justify-content:center; }
+  .modal-overlay.active { display:flex; }
+  @media (min-width:640px){ .modal-overlay{align-items:center} }
+  .modal { background:var(--card); border-radius:20px 20px 0 0; padding:24px; width:100%; max-width:420px; animation:slideUp .3s ease; border:1px solid var(--border); max-height:90vh; overflow-y:auto; }
+  @media (min-width:640px){ .modal{border-radius:20px} }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+  .modal-title h3 { font-size:18px; font-weight:700; }
+  .modal-close { background:none; border:none; font-size:28px; color:var(--text-secondary); cursor:pointer; }
+  .form-group { margin-bottom:16px; }
+  .form-group label { display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
+  .form-group input,.form-group select,.form-group textarea { width:100%; padding:12px 14px; border:1px solid var(--border); border-radius:10px; font-size:15px; background:var(--input-bg); color:var(--text); }
+  .duration-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+  .duration-btn { padding:10px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); font-size:14px; font-weight:600; color:var(--text); cursor:pointer; }
+  .duration-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+  .summary-box { border-radius:12px; padding:12px; margin-bottom:12px; font-size:14px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); }
+  .summary-box.ok { background:#eef2ff; border-color:#c7d2fe; color:#3730a3; }
+  .summary-box.bad { background:var(--busy-bg); border-color:var(--busy-border); color:var(--busy-text); font-weight:600; }
+  body.dark .summary-box.ok { background:#312e81; border-color:#4338ca; color:#c7d2fe; }
+  .btn-submit { width:100%; padding:14px; background:var(--primary); color:white; border:none; border-radius:12px; font-size:16px; font-weight:600; cursor:pointer; margin-top:6px; }
+  .btn-submit:disabled { background:var(--past-bg); color:var(--past-text); cursor:not-allowed; }
+
+  .settings-panel { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:20px; margin-bottom:20px; }
+  .settings-panel h3 { font-size:16px; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .settings-panel h4 { font-size:14px; font-weight:700; color:var(--text-secondary); margin:18px 0 10px; text-transform:uppercase; letter-spacing:.4px; }
+  .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media (max-width:520px){ .settings-grid{grid-template-columns:1fr} }
+  .setting-item label { display:block; font-size:13px; font-weight:600; color:var(--text-secondary); margin-bottom:6px; }
+  .setting-item input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:15px; }
+  .setting-hint { font-size:11px; color:var(--text-secondary); margin-top:4px; }
+  .settings-actions { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+  .btn-save { flex:1; min-width:140px; padding:12px; background:var(--primary); color:white; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
+  .btn-reset { padding:12px 16px; background:var(--past-bg); color:var(--text); border:1px solid var(--border); border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
+  .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--active-bg); color:var(--active-text); border:1px solid var(--active-border); padding:12px 20px; border-radius:12px; font-size:14px; font-weight:600; z-index:2000; display:none; box-shadow:0 4px 12px rgba(0,0,0,.15); }
+  .toast.show { display:block; animation:slideUp .3s ease; }
+
+  /* Управление машинками */
+  .machine-mgmt { display:grid; gap:10px; }
+  .machine-mgmt-row { display:grid; grid-template-columns:1fr 1fr auto auto; gap:8px; align-items:center; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; padding:8px 10px; }
+  .machine-mgmt-row input[type=text] { padding:8px 10px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--text); font-size:14px; }
+  .machine-mgmt-row .mm-id { font-size:12px; font-weight:700; color:var(--text-secondary); min-width:28px; }
+  .mm-toggle { font-size:12px; font-weight:600; padding:6px 10px; border-radius:6px; border:1px solid var(--border); cursor:pointer; background:var(--card); color:var(--text); white-space:nowrap; }
+  .mm-toggle.on { background:var(--free-bg); color:var(--free-text); border-color:var(--free-border); }
+  .mm-del { background:var(--busy-bg); color:var(--busy-text); border:1px solid var(--busy-border); padding:6px 10px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
+  .add-machine-bar { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .add-machine-bar input { flex:1; min-width:120px; padding:9px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:14px; }
+
+  /* Список пользователей */
+  .list-toolbar { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:14px; margin-bottom:14px; display:grid; gap:12px; }
+  .list-search-row { display:flex; gap:8px; }
+  .list-search { flex:1; padding:10px 14px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--text); font-size:15px; }
+  .list-sort { padding:10px 12px; border:1px solid var(--border); border-radius:10px; background:var(--input-bg); color:var(--text); font-size:14px; }
+  .alpha-index { display:flex; flex-wrap:wrap; gap:4px; }
+  .alpha-btn { min-width:30px; padding:6px 8px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text-secondary); font-size:13px; font-weight:600; cursor:pointer; }
+  .alpha-btn.active { background:var(--primary); color:white; border-color:var(--primary); }
+  .alpha-btn.empty { opacity:.35; cursor:default; }
+  .list-stats { font-size:12px; color:var(--text-secondary); text-align:center; }
+  .add-user-bar { display:flex; gap:8px; flex-wrap:wrap; }
+  .add-user-bar input { flex:1; min-width:120px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--input-bg); color:var(--text); font-size:14px; }
+  .btn-add-user { padding:10px 16px; background:var(--primary); color:white; border:none; border-radius:8px; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; }
+  .users-scroll { background:var(--card); border:1px solid var(--border); border-radius:14px; max-height:60vh; overflow-y:auto; }
+  .letter-header { position:sticky; top:0; background:var(--input-bg); color:var(--primary); font-weight:700; font-size:13px; padding:6px 14px; border-bottom:1px solid var(--border); z-index:2; }
+  .user-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); gap:10px; }
+  .user-row:last-child { border-bottom:none; }
+  .user-name { font-size:15px; font-weight:500; }
+  .user-meta { font-size:11px; color:var(--text-secondary); }
+  .bind-chip { display:inline-block; font-size:10px; font-weight:700; padding:1px 6px; border-radius:8px; margin-left:6px; vertical-align:middle; }
+  .bind-chip.bound { background:var(--free-bg); color:var(--free-text); }
+  .bind-chip.unbound { background:var(--past-bg); color:var(--past-text); }
+  .user-actions { display:flex; gap:6px; }
+  .btn-mini { padding:5px 9px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--input-bg); color:var(--text); white-space:nowrap; }
+  .btn-mini.danger { background:var(--busy-bg); color:var(--busy-text); border-color:var(--busy-border); }
+  .empty-list { text-align:center; color:var(--text-secondary); padding:30px; font-style:italic; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">🧺</span>
+      <div class="logo-text">
+        <h1 id="appTitle">Стиралки</h1>
+        <p id="appSubtitle">Бронирование в общежитии</p>
+      </div>
+    </div>
+    <div class="header-controls">
+      <select id="langSelect" class="lang-select" onchange="setLanguage(this.value)">
+        <option value="ru">RU</option>
+        <option value="en">EN</option>
+        <option value="zh">中文</option>
+      </select>
+      <button id="adminBtn" class="admin-btn" onclick="toggleAdmin()">🔒 <span class="t-admin">Админ</span></button>
+      <button id="themeToggle" class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnMachines" onclick="setView('machines')">🫧 <span class="t-machines">Машинки</span></button>
+      <button class="view-btn" id="btnSchedule" onclick="setView('schedule')">📅 <span class="t-schedule">Сетка</span></button>
+      <button class="view-btn" id="btnList" onclick="setView('list')" style="display:none">👥 <span class="t-list">Список</span></button>
+      <button class="view-btn" id="btnSettings" onclick="setView('settings')" style="display:none">⚙️ <span class="t-settings">Настройки</span></button>
+    </div>
+  </div>
+</header>
+
+<div class="container" id="app">
+  <div style="text-align:center;padding:40px;color:var(--text-secondary)">Загрузка...</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Модалка бронирования -->
+<div class="modal-overlay" id="bookModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><h3 id="modalMachineName">Бронирование</h3></div>
+      <button class="modal-close" onclick="closeModal('bookModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="t-startTime">Время начала</label>
+      <input type="time" id="bookTime" step="300">
+    </div>
+    <div class="form-group">
+      <label class="t-duration">Длительность</label>
+      <div class="duration-grid" id="durationGrid">
+        <button class="duration-btn" onclick="setDuration(30,this)">30 <span class="t-min">мин</span></button>
+        <button class="duration-btn active" onclick="setDuration(60,this)">60 <span class="t-min">мин</span></button>
+        <button class="duration-btn" onclick="setDuration(90,this)">90 <span class="t-min">мин</span></button>
+        <button class="duration-btn" onclick="setDuration(120,this)">120 <span class="t-min">мин</span></button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group"><label class="t-lastName">Фамилия</label><input type="text" id="bookLastName" autocomplete="off"></div>
+      <div class="form-group"><label class="t-firstName">Имя</label><input type="text" id="bookFirstName" autocomplete="off"></div>
+    </div>
+    <div id="bookingSummary" class="summary-box ok" style="display:none;"></div>
+    <div id="weeklyLimitInfo" class="limit-info" style="display:none;"></div>
+    <button class="btn-submit t-book" id="bookSubmitBtn" onclick="confirmBooking()">Забронировать</button>
+  </div>
+</div>
+
+<!-- Модалка логина админа -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title"><h3 class="t-adminLogin">Вход для администратора</h3></div>
+      <button class="modal-close" onclick="closeModal('adminLoginModal')">×</button>
+    </div>
+    <div class="form-group">
+      <label class="t-password">Пароль</label>
+      <input type="password" id="adminPassword" placeholder="Введите пароль">
+    </div>
+    <button class="btn-submit t-login" onclick="loginAdmin()">Войти</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set, remove, push, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-MwonAjW0t-L42W6FiVEMuEn_qs-2K0M",
+    authDomain: "stirk-9f38b.firebaseapp.com",
+    databaseURL: "https://stirk-9f38b-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "stirk-9f38b",
+    storageBucket: "stirk-9f38b.firebasestorage.app",
+    messagingSenderId: "145396647769",
+    appId: "1:145396647769:web:67e824ced08bb8382f6e48"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const bookingsRef = ref(db, 'bookings');
+  const machineStatusRef = ref(db, 'machineStatus');
+  const allowedUsersRef = ref(db, 'allowedUsers');
+  const settingsRef = ref(db, 'settings');
+  const machinesRef = ref(db, 'machines');
+  const userRegistryRef = ref(db, 'userRegistry');
+
+  const ADMIN_PASSWORD = 'admin123'; // ← поменяй на свой
+
+  const DEFAULT_CONFIG = {
+    openHour: 8, closeHour: 23,
+    dailyMachinesLimit: 2,
+    perMachineDailyLimit: 180,
+    weeklyLimit: 240,
+    maxAdvanceHours: 13,
+    cleanupDelayHours: 1
+  };
+  let config = { ...DEFAULT_CONFIG };
+
+  // ===== XSS-защита =====
+  const escapeHtml = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  // ===== ПЕРЕВОДЫ =====
+  const i18n = {
+    ru: {
+      title:'Стиралки', subtitle:'Бронирование в общежитии', machines:'Машинки', schedule:'Сетка', admin:'Админ', list:'Список', settings:'Настройки',
+      date:'Дата:',
+      rules:'⚠️ Работаем с {open}:00 до {close}:00. Стирка должна закончиться до {close}:00.<br>Бронь не ранее текущего времени и не более чем на {advance} часов вперёд.<br>Лимиты: {dailyMachines} машинки в день, {perMachineH} ч на одну машинку, {weeklyH} ч в неделю.',
+      startTime:'Время начала', duration:'Длительность', min:'мин', lastName:'Фамилия', firstName:'Имя', book:'Забронировать', cancel:'Отменить',
+      free:'Свободна', allDayFree:'Свободно весь день', scheduleTitle:'Расписание',
+      active:'🔴 Идёт стирка', past:'✓ Завершено', future:'⏳ Будет', remaining:'осталось {n} мин',
+      nextSlot:'Твоя следующая стирка', nextSlotIn:'через {n} мин', nextSlotNow:'прямо сейчас',
+      errName:'Укажи имя и фамилию', errTime:'Нельзя бронировать прошедшее время или более чем на {advance} часов вперёд!',
+      errBusy:'Время уже занято!', errClosing:'Стирка закончится после закрытия ({close}:00). Выбери раньше или короче.',
+      errLimit1:'Лимит: макс. {dailyMachines} разные машинки в день.', errLimit2:'Лимит: макс. {perMachineH} часа на одну машинку в день.',
+      errCancel:'Отменить можно только свою бронь.', errNotAllowed:'❌ Вас нет в списке разрешённых. Обратитесь к коменданту.',
+      errNameTaken:'⛔ Это имя уже закреплено за другим устройством. Обратись к админу, чтобы сбросить привязку.',
+      errWeeklyLimit:'⏰ Превышен лимит {weeklyH} часа в неделю. Использовано: {used} из {weekly} мин.',
+      confirmCancel:'Отменить действие?', noSlots:'Нет доступных слотов.',
+      machine:'Стиралка', floor:'этаж',
+      adminLogin:'Вход для администратора', password:'Пароль', login:'Войти', wrongPassword:'Неверный пароль',
+      working:'Работает', broken:'Сломана', maintenance:'На обслуживании',
+      comment:'Комментарий', brokenNotice:'⚠️ Машинка недоступна',
+      weeklyLimit:'Осталось на неделю: {remaining} из {weekly} мин',
+      weeklyLimitExceeded:'⚠️ Недельный лимит исчерпан!', closingWarning:'Закончится в {end} — после закрытия {close}:00',
+      settingsTitle:'⚙️ Настройки системы', save:'Сохранить', saved:'✅ Настройки сохранены', resetDefaults:'Сбросить',
+      setOpen:'Открытие (час)', setClose:'Закрытие (час)',
+      setDailyMachines:'Макс. машинок в день', setPerMachine:'Макс. минут на одну машинку в день',
+      setWeekly:'Недельный лимит (минут)', setAdvance:'За сколько часов можно бронировать вперёд', setCleanup:'Через сколько часов удалять прошедшие брони',
+      machinesTitle:'🫧 Список машинок', addMachine:'+ Добавить машинку', machineNamePh:'Название', machineFloorPh:'Этаж',
+      enabled:'Вкл', disabled:'Выкл', delMachine:'Удалить', machineSaved:'✅ Машинка сохранена', machineDeleted:'🗑️ Машинка удалена',
+      validationError:'⚠️ Проверь значения:',
+      listTitle:'👥 Разрешённые пользователи', search:'Поиск по фамилии или имени…',
+      sortLasc:'Фамилия А-Я', sortLdesc:'Фамилия Я-А', sortAdded:'По дате добавления',
+      all:'Все', noUsers:'Список пуст. Добавьте пользователей.', noMatch:'Ничего не найдено.',
+      shownOf:'Показано {shown} из {total}', addNew:'+ Добавить', added:'✅ Пользователь добавлен', removed:'🗑️ Пользователь удалён',
+      addedOn:'добавлен', bound:'привязан', unbound:'не привязан', resetBind:'Сбросить привязку', bindReset:'✅ Привязка сброшена',
+      bindTo:'устройство'
+    },
+    en: {
+      title:'Laundry', subtitle:'Dormitory Booking', machines:'Machines', schedule:'Schedule', admin:'Admin', list:'Users', settings:'Settings',
+      date:'Date:',
+      rules:'⚠️ Open {open}:00–{close}:00. Wash must finish by {close}:00.<br>Book no earlier than now and max {advance}h ahead.<br>Limits: {dailyMachines} machines/day, {perMachineH}h per machine, {weeklyH}h/week.',
+      startTime:'Start time', duration:'Duration', min:'min', lastName:'Last name', firstName:'First name', book:'Book', cancel:'Cancel',
+      free:'Free', allDayFree:'Free all day', scheduleTitle:'Schedule',
+      active:'🔴 In progress', past:'✓ Finished', future:'⏳ Upcoming', remaining:'{n} min left',
+      nextSlot:'Your next wash', nextSlotIn:'in {n} min', nextSlotNow:'right now',
+      errName:'Enter first and last name', errTime:'Cannot book past time or >{advance}h ahead!',
+      errBusy:'Slot already booked!', errClosing:'Wash would end after closing ({close}:00). Pick earlier or shorter.',
+      errLimit1:'Limit: max {dailyMachines} different machines per day.', errLimit2:'Limit: max {perMachineH} hours per machine per day.',
+      errCancel:'You can only cancel your own booking.', errNotAllowed:'❌ You are not in the allowed list. Contact the manager.',
+      errNameTaken:'⛔ This name is already bound to another device. Ask admin to reset the binding.',
+      errWeeklyLimit:'⏰ Weekly {weeklyH}h limit exceeded. Used: {used} of {weekly} min.',
+      confirmCancel:'Confirm action?', noSlots:'No available slots.',
+      machine:'Machine', floor:'floor',
+      adminLogin:'Admin Login', password:'Password', login:'Login', wrongPassword:'Wrong password',
+      working:'Working', broken:'Broken', maintenance:'Maintenance',
+      comment:'Comment', brokenNotice:'⚠️ Machine unavailable',
+      weeklyLimit:'Remaining this week: {remaining} of {weekly} min',
+      weeklyLimitExceeded:'⚠️ Weekly limit exceeded!', closingWarning:'Ends at {end} — after {close}:00 closing',
+      settingsTitle:'⚙️ System Settings', save:'Save', saved:'✅ Settings saved', resetDefaults:'Reset',
+      setOpen:'Open (hour)', setClose:'Close (hour)',
+      setDailyMachines:'Max machines per day', setPerMachine:'Max minutes per machine per day',
+      setWeekly:'Weekly limit (minutes)', setAdvance:'Max hours in advance', setCleanup:'Delete finished bookings after (hours)',
+      machinesTitle:'🫧 Machine list', addMachine:'+ Add machine', machineNamePh:'Name', machineFloorPh:'Floor',
+      enabled:'On', disabled:'Off', delMachine:'Delete', machineSaved:'✅ Machine saved', machineDeleted:'🗑️ Machine deleted',
+      validationError:'⚠️ Check values:',
+      listTitle:'👥 Allowed Users', search:'Search by name…',
+      sortLasc:'Last name A-Z', sortLdesc:'Last name Z-A', sortAdded:'By date added',
+      all:'All', noUsers:'List is empty. Add users.', noMatch:'Nothing found.',
+      shownOf:'Showing {shown} of {total}', addNew:'+ Add', added:'✅ User added', removed:'🗑️ User removed',
+      addedOn:'added', bound:'bound', unbound:'unbound', resetBind:'Reset binding', bindReset:'✅ Binding reset',
+      bindTo:'device'
+    },
+    zh: {
+      title:'洗衣房', subtitle:'宿舍预约系统', machines:'洗衣机', schedule:'时间表', admin:'管理员', list:'用户', settings:'设置',
+      date:'日期:',
+      rules:'⚠️ 开放 {open}:00–{close}:00。洗衣须在{close}:00前结束。<br>不可预约过去时间，最多提前{advance}小时。<br>限制：每天{dailyMachines}台、每台{perMachineH}小时、每周{weeklyH}小时。',
+      startTime:'开始时间', duration:'时长', min:'分钟', lastName:'姓', firstName:'名', book:'预约', cancel:'取消',
+      free:'空闲', allDayFree:'全天空闲', scheduleTitle:'时间表',
+      active:'🔴 进行中', past:'✓ 已结束', future:'⏳ 待开始', remaining:'剩余 {n} 分钟',
+      nextSlot:'你的下一次洗衣', nextSlotIn:'{n} 分钟后', nextSlotNow:'现在',
+      errName:'请输入姓名', errTime:'无法预约过去时间或超过{advance}小时！',
+      errBusy:'该时段已被预约！', errClosing:'洗衣将在{close}:00关门后结束，请选更早或更短。',
+      errLimit1:'限制：每天最多{dailyMachines}台不同机器。', errLimit2:'限制：每台机器每天最多{perMachineH}小时。',
+      errCancel:'只能取消自己的预约。', errNotAllowed:'❌ 您不在授权名单中，请联系管理员。',
+      errNameTaken:'⛔ 该名字已绑定其他设备，请联系管理员解绑。',
+      errWeeklyLimit:'⏰ 超过每周{weeklyH}小时限制。已用：{used}/{weekly}分钟。',
+      confirmCancel:'确认操作？', noSlots:'没有可用时段。',
+      machine:'洗衣机', floor:'楼',
+      adminLogin:'管理员登录', password:'密码', login:'登录', wrongPassword:'密码错误',
+      working:'正常', broken:'故障', maintenance:'维护中',
+      comment:'备注', brokenNotice:'⚠️ 机器不可用',
+      weeklyLimit:'本周剩余：{remaining}/{weekly}分钟',
+      weeklyLimitExceeded:'⚠️ 周限额已用完！', closingWarning:'将在 {end} 结束 — 超过{close}:00关门',
+      settingsTitle:'⚙️ 系统设置', save:'保存', saved:'✅ 设置已保存', resetDefaults:'重置',
+      setOpen:'开门（时）', setClose:'关门（时）',
+      setDailyMachines:'每天最多机器数', setPerMachine:'每台机器每天最多分钟',
+      setWeekly:'每周限额（分钟）', setAdvance:'最多提前几小时', setCleanup:'结束后几小时删除记录',
+      machinesTitle:'🫧 机器列表', addMachine:'+ 添加机器', machineNamePh:'名称', machineFloorPh:'楼层',
+      enabled:'启用', disabled:'停用', delMachine:'删除', machineSaved:'✅ 已保存', machineDeleted:'🗑️ 已删除',
+      validationError:'⚠️ 检查数值：',
+      listTitle:'👥 授权用户', search:'搜索姓名…',
+      sortLasc:'姓 A-Z', sortLdesc:'姓 Z-A', sortAdded:'按添加时间',
+      all:'全部', noUsers:'列表为空，请添加用户。', noMatch:'未找到。',
+      shownOf:'显示 {shown}/{total}', addNew:'+ 添加', added:'✅ 用户已添加', removed:'🗑️ 用户已删除',
+      addedOn:'添加于', bound:'已绑定', unbound:'未绑定', resetBind:'解绑', bindReset:'✅ 已解绑',
+      bindTo:'设备'
+    }
+  };
+
+  let currentLang = localStorage.getItem('laundry_lang') || 'ru';
+  document.getElementById('langSelect').value = currentLang;
+  const t = (key, params = {}) => {
+    let text = i18n[currentLang][key] || key;
+    for (const [k, v] of Object.entries(params)) text = text.replaceAll(`{${k}}`, v);
+    return text;
+  };
+  const rulesText = () => t('rules', {
+    open: config.openHour, close: config.closeHour, advance: config.maxAdvanceHours,
+    dailyMachines: config.dailyMachinesLimit,
+    perMachineH: +(config.perMachineDailyLimit/60).toFixed(1),
+    weeklyH: +(config.weeklyLimit/60).toFixed(1)
+  });
+
+  const showToast = (msg) => {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>el.classList.remove('show'), 2500);
+  };
+
+  // ===== ТЕМА =====
+  let isDark = localStorage.getItem('laundry_dark') === 'true';
+  function applyTheme() {
+    document.body.classList.toggle('dark', isDark);
+    document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+  }
+  window.toggleTheme = () => { isDark=!isDark; localStorage.setItem('laundry_dark',isDark); applyTheme(); };
+  applyTheme();
+
+  // ===== ДАННЫЕ =====
+  let bookings={}, machineStatuses={}, allowedUsers={}, userRegistry={};
+  let machinesList=[]; // [{id,name,floor,active}]
+  let machinesLoaded=false;
+  let currentView='machines';
+  let selectedDate = new Date().toISOString().split('T')[0];
+  let pendingBooking=null, selectedDuration=60;
+  let usersSearch='', usersLetter='', usersSort='lastNameAsc';
+
+  let deviceId = localStorage.getItem('laundry_device_id');
+  if (!deviceId) {
+    deviceId = 'dev_'+Math.random().toString(36).substr(2,9)+Date.now().toString(36);
+    localStorage.setItem('laundry_device_id', deviceId);
+  }
+
+  // ===== АДМИН =====
+  let isAdmin = false;
+  function applyAdminVisibility() {
+    document.getElementById('btnList').style.display = isAdmin ? '' : 'none';
+    document.getElementById('btnSettings').style.display = isAdmin ? '' : 'none';
+  }
+  window.toggleAdmin = () => {
+    if (isAdmin) {
+      isAdmin = false; applyAdminVisibility();
+      document.getElementById('adminBtn').classList.remove('active');
+      if (currentView==='list'||currentView==='settings') currentView='machines';
+      render();
+    } else document.getElementById('adminLoginModal').classList.add('active');
+  };
+  window.loginAdmin = () => {
+    if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
+      isAdmin = true; applyAdminVisibility();
+      document.getElementById('adminBtn').classList.add('active');
+      closeModal('adminLoginModal'); document.getElementById('adminPassword').value=''; render();
+    } else alert(t('wrongPassword'));
+  };
+
+  // ===== ВРЕМЯ =====
+  const timeToMinutes = (tm)=>{const[h,m]=tm.split(':').map(Number);return h*60+m;};
+  const minutesToTime = (mn)=>`${String(Math.floor(mn/60)).padStart(2,'0')}:${String(mn%60).padStart(2,'0')}`;
+  const addMinutes = (tm,mn)=>minutesToTime(timeToMinutes(tm)+mn);
+  const closingMinutes = ()=>config.closeHour*60;
+  const openingMinutes = ()=>config.openHour*60;
+
+  const getTimeSlots = () => {
+    const slots=[];
+    for (let h=config.openHour; h<config.closeHour; h++){
+      slots.push(`${String(h).padStart(2,'0')}:00`);
+      slots.push(`${String(h).padStart(2,'0')}:30`);
+    }
+    return slots;
+  };
+
+  const getWeekStart = () => {
+    const now=new Date(); const day=now.getDay();
+    const diff=now.getDate()-day+(day===0?-6:1);
+    const mon=new Date(now.setDate(diff)); mon.setHours(0,0,0,0); return mon;
+  };
+  const getWeeklyUsage = (devId) => {
+    const ws=getWeekStart(); let total=0;
+    for (const b of Object.values(bookings)){
+      if (b.deviceId!==devId) continue;
+      const[y,m,d]=b.date.split('-').map(Number);
+      if (new Date(y,m-1,d)>=ws) total+=(b.duration||0);
+    }
+    return total;
+  };
+
+  // имя -> ключ для реестра (безопасный ключ Firebase)
+  const nameKey = (ln,fn)=> `${ln} ${fn}`.trim().toLowerCase()
+    .replace(/\s+/g,'_').replace(/[.#$\[\]/]/g,'');
+
+  // владелец имени среди броней ТЕКУЩЕЙ НЕДЕЛИ (защита от перехвата имени)
+  const ownerFromWeekBookings = (ln,fn) => {
+    const l=ln.trim().toLowerCase(), f=fn.trim().toLowerCase();
+    const ws=getWeekStart();
+    for (const b of Object.values(bookings)){
+      if (b.lastName.toLowerCase()===l && b.firstName.toLowerCase()===f){
+        const[y,m,d]=b.date.split('-').map(Number);
+        if (new Date(y,m-1,d)>=ws) return b.deviceId;
+      }
+    }
+    return null;
+  };
+
+  const isUserAllowed = (ln,fn) => {
+    const full=`${ln} ${fn}`.trim().toLowerCase();
+    return Object.values(allowedUsers).some(u=>(u.fullName||'').toLowerCase()===full);
+  };
+
+  const isSlotAllowed = (dateStr,timeStr) => {
+    const[y,m,d]=dateStr.split('-').map(Number);
+    const[h,min]=timeStr.split(':').map(Number);
+    const slot=new Date(y,m-1,d,h,min);
+    if (slot<new Date()) return false;
+    if (slot>new Date(Date.now()+config.maxAdvanceHours*3600*1000)) return false;
+    return true;
+  };
+  const canFinishByClosing = (timeStr,dur)=> (timeToMinutes(timeStr)+dur) <= closingMinutes();
+
+  const getBookingStatus = (b)=>{
+    const now=new Date();
+    const[y,m,d]=b.date.split('-').map(Number);
+    const[sh,sm]=b.startTime.split(':').map(Number);
+    const[eh,em]=b.endTime.split(':').map(Number);
+    const start=new Date(y,m-1,d,sh,sm), end=new Date(y,m-1,d,eh,em);
+    if (now>=end) return 'past';
+    if (now>=start&&now<end) return 'active';
+    return 'future';
+  };
+  const minutesLeft = (b)=>{
+    const now=new Date();
+    const[y,m,d]=b.date.split('-').map(Number);
+    const[eh,em]=b.endTime.split(':').map(Number);
+    const end=new Date(y,m-1,d,eh,em);
+    return Math.max(0, Math.round((end-now)/60000));
+  };
+  const isSlotAvailable = (mid,date,st,et)=>{
+    const ns=timeToMinutes(st), ne=timeToMinutes(et);
+    for (const b of Object.values(bookings))
+      if (b.machineId===mid&&b.date===date&& ns<timeToMinutes(b.endTime)&&ne>timeToMinutes(b.startTime)) return false;
+    return true;
+  };
+  const formatDate = (ds)=>{
+    const d=new Date(ds+'T00:00:00');
+    const loc={ru:'ru-RU',en:'en-US',zh:'zh-CN'};
+    return d.toLocaleDateString(loc[currentLang],{weekday:'short',day:'numeric',month:'long'});
+  };
+
+  const cleanupOldBookings = async () => {
+    const now=new Date(); const keys=[];
+    for (const [key,b] of Object.entries(bookings)){
+      const[y,m,d]=b.date.split('-').map(Number);
+      const[eh,em]=b.endTime.split(':').map(Number);
+      const end=new Date(y,m-1,d,eh,em); end.setHours(end.getHours()+config.cleanupDelayHours);
+      if (now>end) keys.push(key);
+    }
+    for (const key of keys){ try{ await remove(ref(db,`bookings/${key}`)); }catch(e){console.error(e);} }
+  };
+
+  // ===== UI =====
+  window.setView = (v)=>{
+    currentView=v;
+    ['Machines','Schedule','List','Settings'].forEach(n=>{
+      const el=document.getElementById('btn'+n);
+      if (el) el.classList.toggle('active', n.toLowerCase()===v);
+    });
+    render();
+  };
+  window.setDuration = (mins,btn)=>{
+    selectedDuration=mins;
+    document.querySelectorAll('.duration-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active'); updateBookingUI();
+  };
+  window.changeDate = (v)=>{ selectedDate=v; render(); };
+  window.closeModal = (id)=>document.getElementById(id).classList.remove('active');
+
+  const updateBookingUI = () => {
+    const time=document.getElementById('bookTime').value;
+    const summary=document.getElementById('bookingSummary');
+    const submitBtn=document.getElementById('bookSubmitBtn');
+    const ln=document.getElementById('bookLastName').value.trim();
+    const fn=document.getElementById('bookFirstName').value.trim();
+    if (!time){ summary.style.display='none'; submitBtn.disabled=false; return; }
+    const endMin=timeToMinutes(time)+selectedDuration;
+    const exceeds=endMin>closingMinutes();
+    summary.style.display='block';
+    if (exceeds){
+      summary.className='summary-box bad';
+      summary.textContent=t('closingWarning',{end:minutesToTime(endMin),close:config.closeHour});
+      submitBtn.disabled=true;
+    } else {
+      summary.className='summary-box ok';
+      summary.textContent=`${time} — ${minutesToTime(endMin)} • ${selectedDuration} ${t('min')}`;
+      submitBtn.disabled=false;
+    }
+    const limitInfo=document.getElementById('weeklyLimitInfo');
+    if (ln&&fn){
+      const used=getWeeklyUsage(deviceId);
+      const remaining=Math.max(0,config.weeklyLimit-used);
+      limitInfo.style.display='block';
+      if (remaining<selectedDuration){
+        limitInfo.style.background='var(--busy-bg)'; limitInfo.style.color='var(--busy-text)'; limitInfo.style.borderColor='var(--busy-border)';
+        limitInfo.textContent=t('weeklyLimitExceeded'); submitBtn.disabled=true;
+      } else {
+        limitInfo.style.background='var(--limit-bg)'; limitInfo.style.color='var(--limit-text)'; limitInfo.style.borderColor='var(--limit-border)';
+        limitInfo.textContent=t('weeklyLimit',{remaining,weekly:config.weeklyLimit});
+      }
+    } else limitInfo.style.display='none';
+  };
+
+  window.openBookModal = (machineId,time)=>{
+    const st=machineStatuses[machineId];
+    const m=machinesList.find(x=>x.id===machineId);
+    if (!m||!m.active||(st&&st.status!=='working')){ alert(t('brokenNotice')); return; }
+    pendingBooking={machineId,time};
+    document.getElementById('modalMachineName').textContent=`🧺 ${escapeHtml(m.name)}`;
+    const ti=document.getElementById('bookTime');
+    ti.min=`${String(config.openHour).padStart(2,'0')}:00`;
+    ti.max=`${String(config.closeHour-1).padStart(2,'0')}:30`;
+    if (time) ti.value=time;
+    else {
+      const now=new Date(); let h=now.getHours(), mm=Math.floor(now.getMinutes()/5)*5;
+      if (h<config.openHour){h=config.openHour;mm=0;}
+      const maxH=config.closeHour-1;
+      if (h>maxH||(h===maxH&&mm>30)){h=maxH;mm=30;}
+      ti.value=`${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+    }
+    pendingBooking.time=ti.value;
+    ti.onchange=()=>{ pendingBooking.time=ti.value; updateBookingUI(); };
+    document.getElementById('bookLastName').value=localStorage.getItem('laundry_ln')||'';
+    document.getElementById('bookFirstName').value=localStorage.getItem('laundry_fn')||'';
+    document.getElementById('bookLastName').oninput=updateBookingUI;
+    document.getElementById('bookFirstName').oninput=updateBookingUI;
+    document.querySelectorAll('.duration-btn').forEach(b=>b.classList.toggle('active',parseInt(b.textContent)===selectedDuration));
+    updateBookingUI();
+    document.getElementById('bookModal').classList.add('active');
+  };
+
+  window.confirmBooking = async ()=>{
+    const ln=document.getElementById('bookLastName').value.trim();
+    const fn=document.getElementById('bookFirstName').value.trim();
+    const time=document.getElementById('bookTime').value;
+    if (!ln||!fn) return alert(t('errName'));
+    if (!time) return alert(t('errTime',{advance:config.maxAdvanceHours}));
+    if (!isUserAllowed(ln,fn)) return alert(t('errNotAllowed'));
+    if (!isSlotAllowed(selectedDate,time)) return alert(t('errTime',{advance:config.maxAdvanceHours}));
+    if (!canFinishByClosing(time,selectedDuration)) return alert(t('errClosing',{close:config.closeHour}));
+    const endTime=addMinutes(time,selectedDuration);
+    if (!isSlotAvailable(pendingBooking.machineId,selectedDate,time,endTime)) return alert(t('errBusy'));
+
+    // ===== ЗАЩИТА ЛИМИТА ОТ КРАЖИ ИМЕНИ =====
+    const nk = nameKey(ln,fn);
+    const weekOwner = ownerFromWeekBookings(ln,fn);
+    if (weekOwner && weekOwner !== deviceId) return alert(t('errNameTaken'));
+    const reg = userRegistry[nk];
+    if (reg && reg.deviceId && reg.deviceId !== deviceId) return alert(t('errNameTaken'));
+    if (!reg || !reg.deviceId) {
+      try { await set(ref(db,`userRegistry/${nk}`), {deviceId, lastName:ln, firstName:fn, claimedAt:Date.now()}); }
+      catch(e){ return alert('Error: '+e.message); }
+    }
+    // лимиты строго по deviceId владельца
+    const dev = deviceId;
+
+    const weekly=getWeeklyUsage(dev);
+    if (weekly+selectedDuration>config.weeklyLimit) return alert(t('errWeeklyLimit',{used:weekly,weekly:config.weeklyLimit,weeklyH:+(config.weeklyLimit/60).toFixed(1)}));
+    const dayB=Object.values(bookings).filter(b=>b.date===selectedDate&&b.deviceId===dev);
+    const uniq=new Set(dayB.map(b=>b.machineId)).size;
+    const already=dayB.some(b=>b.machineId===pendingBooking.machineId);
+    if (uniq>=config.dailyMachinesLimit&&!already) return alert(t('errLimit1',{dailyMachines:config.dailyMachinesLimit}));
+    const mTot=dayB.filter(b=>b.machineId===pendingBooking.machineId).reduce((s,b)=>s+(b.duration||0),0);
+    if (mTot+selectedDuration>config.perMachineDailyLimit) return alert(t('errLimit2',{perMachineH:+(config.perMachineDailyLimit/60).toFixed(1)}));
+
+    const key=`${pendingBooking.machineId}|${selectedDate}|${time}`;
+    const newBooking={machineId:pendingBooking.machineId,lastName:ln,firstName:fn,date:selectedDate,startTime:time,endTime,duration:selectedDuration,deviceId:dev,createdAt:Date.now()};
+    try{
+      // ===== ГОНКА: атомарная запись через транзакцию =====
+      const res = await runTransaction(ref(db,`bookings/${key}`), (cur)=>{
+        if (cur !== null) return; // слот уже занят — отмена транзакции
+        return newBooking;
+      });
+      if (!res.committed) return alert(t('errBusy'));
+      localStorage.setItem('laundry_ln',ln); localStorage.setItem('laundry_fn',fn);
+      closeModal('bookModal');
+    }catch(e){alert('Error: '+e.message);}
+  };
+
+  const doCancel = async (key)=>{
+    const b=bookings[key]; if(!b) return;
+    if (!isAdmin && b.deviceId!==deviceId) return alert(t('errCancel'));
+    if (!confirm(t('confirmCancel'))) return;
+    try{ await remove(ref(db,`bookings/${key}`)); }catch(e){alert('Error: '+e.message);}
+  };
+
+  window.setMachineStatus = async (mid,status,comment)=>{
+    try{ await set(ref(db,`machineStatus/${mid}`),{status,comment:comment||'',updatedAt:Date.now(),updatedBy:'admin'}); }
+    catch(e){alert('Error: '+e.message);}
+  };
+
+  // ===== НАСТРОЙКИ + ВАЛИДАЦИЯ =====
+  window.saveSetting = (field,value)=>{
+    const num=parseInt(value,10);
+    if (isNaN(num)) return;
+    config[field]=num;
+  };
+  const validateConfig = (c) => {
+    const errs=[];
+    if (!(c.openHour>=0&&c.openHour<=23)) errs.push('Открытие: 0–23');
+    if (!(c.closeHour>=1&&c.closeHour<=24)) errs.push('Закрытие: 1–24');
+    if (c.openHour>=c.closeHour) errs.push('Открытие < закрытия');
+    const maxMachines=Math.max(1,machinesList.filter(m=>m.active).length);
+    if (!(c.dailyMachinesLimit>=1&&c.dailyMachinesLimit<=maxMachines)) errs.push(`Машинки в день: 1–${maxMachines}`);
+    if (!(c.perMachineDailyLimit>=30&&c.perMachineDailyLimit<=1440)) errs.push('Минут на машинку: 30–1440');
+    if (!(c.weeklyLimit>=30&&c.weeklyLimit<=10080)) errs.push('Недельный: 30–10080');
+    if (!(c.maxAdvanceHours>=1&&c.maxAdvanceHours<=168)) errs.push('Вперёд: 1–168');
+    if (!(c.cleanupDelayHours>=0&&c.cleanupDelayHours<=168)) errs.push('Автоочистка: 0–168');
+    return errs;
+  };
+  window.saveSettings = async ()=>{
+    const errs=validateConfig(config);
+    if (errs.length) return alert(t('validationError')+'\n• '+errs.join('\n• '));
+    try{
+      await set(settingsRef,{...config});
+      showToast(t('saved')); render();
+    }catch(e){alert('Error: '+e.message);}
+  };
+  window.resetSettings = ()=>{ config={...DEFAULT_CONFIG}; render(); };
+
+  // ===== УПРАВЛЕНИЕ МАШИНКАМИ =====
+  window.updateMachineField = (id, field, value)=>{
+    const m=machinesList.find(x=>x.id===id); if(!m) return;
+    m[field]= field==='active' ? value : value; // строки/bool
+  };
+  window.saveMachine = async (id)=>{
+    const m=machinesList.find(x=>x.id===id); if(!m) return;
+    if (!m.name.trim()) return;
+    try{ await set(ref(db,`machines/${id}`),{name:m.name.trim(),floor:(m.floor||'').trim(),active:!!m.active}); showToast(t('machineSaved')); }
+    catch(e){alert('Error: '+e.message);}
+  };
+  window.toggleMachineActive = async (id)=>{
+    const m=machinesList.find(x=>x.id===id); if(!m) return;
+    m.active=!m.active;
+    try{ await set(ref(db,`machines/${id}/active`), m.active); render(); }catch(e){alert('Error: '+e.message);}
+  };
+  window.deleteMachine = async (id)=>{
+    if (!confirm(t('confirmCancel'))) return;
+    try{ await remove(ref(db,`machines/${id}`)); await remove(ref(db,`machineStatus/${id}`)); showToast(t('machineDeleted')); }catch(e){alert('Error: '+e.message);}
+  };
+  window.addMachine = async ()=>{
+    const name=document.getElementById('newMachineName').value.trim();
+    const floor=document.getElementById('newMachineFloor').value.trim();
+    if (!name) return;
+    const maxId=machinesList.reduce((mx,m)=>Math.max(mx,m.id),0);
+    const newId=maxId+1;
+    try{
+      await set(ref(db,`machines/${newId}`),{name,floor,active:true});
+      document.getElementById('newMachineName').value=''; document.getElementById('newMachineFloor').value='';
+      showToast(t('machineSaved'));
+    }catch(e){alert('Error: '+e.message);}
+  };
+
+  // ===== СПИСОК ПОЛЬЗОВАТЕЛЕЙ =====
+  window.usersSearchInput = (v)=>{ usersSearch=v; render(); };
+  window.usersLetterSet = (l)=>{ usersLetter=(usersLetter===l?'':l); render(); };
+  window.usersSortSet = (v)=>{ usersSort=v; render(); };
+  window.addAllowedUser = async ()=>{
+    const ln=document.getElementById('newULastName').value.trim();
+    const fn=document.getElementById('newUFirstName').value.trim();
+    if (!ln||!fn) return;
+    try{
+      await push(ref(db,'allowedUsers'),{fullName:`${ln} ${fn}`,lastName:ln,firstName:fn,addedAt:Date.now()});
+      document.getElementById('newULastName').value=''; document.getElementById('newUFirstName').value='';
+      showToast(t('added'));
+    }catch(e){alert('Error: '+e.message);}
+  };
+  window.removeAllowedUser = async (uid)=>{
+    if (!confirm(t('confirmCancel'))) return;
+    try{ await remove(ref(db,`allowedUsers/${uid}`)); showToast(t('removed')); }catch(e){alert('Error: '+e.message);}
+  };
+  window.resetBind = async (nk)=>{
+    if (!confirm(t('confirmCancel'))) return;
+    try{ await remove(ref(db,`userRegistry/${nk}`)); showToast(t('bindReset')); }catch(e){alert('Error: '+e.message);}
+  };
+
+  const RU_ALPHA='АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ'.split('');
+  const firstLetter = (s)=> (s||'?').trim().charAt(0).toUpperCase();
+  const collator = new Intl.Collator(['ru','en','zh'],{sensitivity:'base'});
+  const buildUserList = () => {
+    let arr=Object.entries(allowedUsers).map(([id,u])=>({id,...u}));
+    const q=usersSearch.trim().toLowerCase();
+    if (q) arr=arr.filter(u=>(u.fullName||'').toLowerCase().includes(q));
+    else if (usersLetter) arr=arr.filter(u=>firstLetter(u.lastName)===usersLetter);
+    if (usersSort==='lastNameAsc') arr.sort((a,b)=>collator.compare(a.lastName||'',b.lastName||''));
+    else if (usersSort==='lastNameDesc') arr.sort((a,b)=>collator.compare(b.lastName||'',a.lastName||''));
+    else arr.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
+    return arr;
+  };
+
+  // ===== ЛЕНТА ВРЕМЕНИ =====
+  const renderTimelineBar = (machineId, mb)=>{
+    const open=openingMinutes(), close=closingMinutes(), span=close-open;
+    const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
+    const showNow = selectedDate===new Date().toISOString().split('T')[0] && nowMin>=open && nowMin<=close;
+    const nowPct = ((nowMin-open)/span*100).toFixed(2);
+    let segs='';
+    mb.forEach(b=>{
+      const s=Math.max(open,timeToMinutes(b.startTime)), e=Math.min(close,timeToMinutes(b.endTime));
+      if (e<=s) return;
+      const left=((s-open)/span*100).toFixed(2), width=((e-s)/span*100).toFixed(2);
+      const st=getBookingStatus(b);
+      const label = width>8 ? escapeHtml(b.lastName) : '';
+      segs+=`<div class="tlbar-seg s-${st}" style="left:${left}%;width:${width}%" title="${escapeHtml(b.lastName)} ${escapeHtml(b.firstName)} • ${b.startTime}–${b.endTime}">${label}</div>`;
+    });
+    const nowLine = showNow ? `<div class="tlbar-now" style="left:${nowPct}%"></div>` : '';
+    return `<div class="tlbar-wrap">
+      <div class="tlbar-labels"><span>${String(config.openHour).padStart(2,'0')}:00</span><span>${String(config.closeHour).padStart(2,'0')}:00</span></div>
+      <div class="tlbar">${segs}${nowLine}</div>
+    </div>`;
+  };
+
+  // ===== БЕЙДЖ СЛЕДУЮЩИЙ СЛОТ =====
+  const renderNextSlotBadge = ()=>{
+    const mine=Object.values(bookings).filter(b=>b.deviceId===deviceId && getBookingStatus(b)!=='past');
+    if (!mine.length) return '';
+    // ближайшая будущая (active считаем ближайшей)
+    mine.sort((a,b)=>{
+      const da=new Date(a.date+'T'+a.startTime), db=new Date(b.date+'T'+b.startTime);
+      return da-db;
+    });
+    const nb=mine[0];
+    const m=machinesList.find(x=>x.id===nb.machineId);
+    const st=getBookingStatus(nb);
+    const sub = st==='active' ? t('nextSlotNow') : t('nextSlotIn',{n:minutesLeft(nb)});
+    return `<div class="next-slot">
+      <span class="ns-icon">🫧</span>
+      <div>
+        <div>${t('nextSlot')}: ${escapeHtml(m?m.name:'')} • ${nb.startTime}–${nb.endTime}</div>
+        <div class="ns-sub">${escapeHtml(nb.lastName)} ${escapeHtml(nb.firstName)} — ${sub}</div>
+      </div>
+    </div>`;
+  };
+
+  // ===== RENDER =====
+  const render = ()=>{
+    const appEl=document.getElementById('app');
+    const allBookings=Object.entries(bookings).map(([key,b])=>({key,...b}));
+    let html=`
+      <div class="date-selector">
+        <label>${t('date')}</label>
+        <input type="date" value="${selectedDate}" onchange="window.changeDate(this.value)">
+        <span style="font-size:14px;color:var(--text-secondary)">${formatDate(selectedDate)}</span>
+      </div>
+      <div class="rules-hint">${rulesText()}</div>`;
+
+    if (currentView==='settings' && isAdmin){ appEl.innerHTML=html+renderSettings(); return; }
+    if (currentView==='list' && isAdmin){ appEl.innerHTML=html+renderList(); return; }
+
+    html += renderNextSlotBadge();
+
+    if (currentView==='machines'){
+      html+=`<div class="machines-list">`;
+      machinesList.filter(m=>m.active).forEach(machine=>{
+        const st=machineStatuses[machine.id];
+        const isBroken=st&&st.status!=='working';
+        const mb=allBookings.filter(b=>b.machineId===machine.id&&b.date===selectedDate)
+          .sort((a,b)=>timeToMinutes(a.startTime)-timeToMinutes(b.startTime));
+        html+=`<div class="machine-card ${isBroken?'broken':''}">
+          <div class="card-header"><div class="machine-info"><span class="machine-icon">🧺</span>
+            <div><div class="machine-name">${escapeHtml(machine.name)}</div><div class="machine-floor">${escapeHtml(machine.floor)}</div></div></div>
+            <span class="status-badge ${isBroken?'broken':'working'}">${isBroken?'🔧 '+t(st.status):'✓ '+t('working')}</span></div>`;
+        if (isBroken) html+=`<div class="broken-notice"><strong>${t('brokenNotice')}</strong>${st.comment?`<div>${escapeHtml(st.comment)}</div>`:''}</div>`;
+        html+= renderTimelineBar(machine.id, mb);
+        html+=`<div class="timeline"><div class="timeline-title">${t('scheduleTitle')}</div>`;
+        if (mb.length===0) html+=`<div style="text-align:center;color:var(--text-secondary);padding:10px;font-style:italic">${t('allDayFree')}</div>`;
+        else mb.forEach(b=>{
+          const bs=getBookingStatus(b); const isMine=b.deviceId===deviceId;
+          const txt=bs==='active'?t('active'):(bs==='past'?t('past'):t('future'));
+          const cd = bs==='active' ? `<span class="tl-countdown">${t('remaining',{n:minutesLeft(b)})}</span>` : '';
+          html+=`<div class="timeline-item status-${bs}">
+            <span class="tl-time">${b.startTime} – ${b.endTime}</span>
+            <span class="tl-name">${escapeHtml(b.lastName)} ${escapeHtml(b.firstName.charAt(0))}.</span>
+            ${cd}
+            <span class="tl-status">${txt}</span>
+            ${(isAdmin||(isMine&&bs!=='past'))?`<button class="btn-cancel-small js-cancel" data-cancel-key="${escapeHtml(b.key)}">${t('cancel')}</button>`:''}
+          </div>`;
+        });
+        html+=`</div><button class="btn-book" onclick="window.openBookModal(${machine.id})" ${isBroken?'disabled':''}>📅 ${t('book')}</button></div>`;
+      });
+      html+=`</div>`;
+    } else {
+      const slots=getTimeSlots();
+      html+=`<div class="schedule-container"><div class="schedule-scroll"><table class="schedule-table"><thead><tr>
+        <th class="time-head" style="text-align:right;padding-right:8px">${t('startTime')}</th>`;
+      machinesList.filter(m=>m.active).forEach(m=>html+=`<th><span class="th-icon">🧺</span>${escapeHtml(m.name.replace(/^.*?№/,'№'))}</th>`);
+      html+=`</tr></thead><tbody>`;
+      slots.forEach(time=>{
+        html+=`<tr><td class="time-cell">${time}</td>`;
+        machinesList.filter(m=>m.active).forEach(machine=>{
+          const st=machineStatuses[machine.id];
+          if (st&&st.status!=='working'){ html+=`<td><button class="slot-btn broken" disabled>🔧</button></td>`; return; }
+          const booking=allBookings.find(b=>b.machineId===machine.id&&b.date===selectedDate&&
+            timeToMinutes(time)>=timeToMinutes(b.startTime)&&timeToMinutes(time)<timeToMinutes(b.endTime));
+          if (booking){
+            const bs=getBookingStatus(booking); const isMine=booking.deviceId===deviceId;
+            html+=`<td><button class="slot-btn booked-${bs} ${(isAdmin||(isMine&&bs!=='past'))?'js-cancel':''}" ${((isAdmin||(isMine&&bs!=='past'))?`data-cancel-key="${escapeHtml(booking.key)}"`:'')} title="${escapeHtml(booking.lastName)} ${escapeHtml(booking.firstName)} • ${booking.startTime}–${booking.endTime}"><span>${escapeHtml(booking.lastName)}</span></button></td>`;
+          } else {
+            const allowed=isSlotAllowed(selectedDate,time)&&canFinishByClosing(time,30);
+            html+=allowed
+              ?`<td><button class="slot-btn free" onclick="window.openBookModal(${machine.id},'${time}')">${t('free')}</button></td>`
+              :`<td><button class="slot-btn disabled" disabled>—</button></td>`;
+          }
+        });
+        html+=`</tr>`;
+      });
+      html+=`</tbody></table></div></div>`;
+    }
+    appEl.innerHTML=html;
+  };
+
+  const renderSettings = ()=>{
+    let mm='';
+    machinesList.forEach(m=>{
+      mm+=`<div class="machine-mgmt-row">
+        <span class="mm-id">#${m.id}</span>
+        <input type="text" value="${escapeHtml(m.name)}" oninput="window.updateMachineField(${m.id},'name',this.value)" placeholder="${t('machineNamePh')}">
+        <input type="text" value="${escapeHtml(m.floor)}" oninput="window.updateMachineField(${m.id},'floor',this.value)" placeholder="${t('machineFloorPh')}">
+        <button class="mm-toggle ${m.active?'on':''}" onclick="window.toggleMachineActive(${m.id})">${m.active?t('enabled'):t('disabled')}</button>
+        <button class="mm-del js-del-machine" data-machine-id="${m.id}">${t('delMachine')}</button>
+        <button class="btn-mini" onclick="window.saveMachine(${m.id})">💾</button>
+      </div>`;
+    });
+    return `<div class="settings-panel">
+      <h3>${t('settingsTitle')}</h3>
+      <h4>${t('machinesTitle')}</h4>
+      <div class="machine-mgmt">${mm}</div>
+      <div class="add-machine-bar">
+        <input type="text" id="newMachineName" placeholder="${t('machineNamePh')}">
+        <input type="text" id="newMachineFloor" placeholder="${t('machineFloorPh')}">
+        <button class="btn-add-user" onclick="window.addMachine()">${t('addMachine')}</button>
+      </div>
+
+      <h4 style="margin-top:24px">${t('setLimits')}</h4>
+      <div class="settings-grid">
+        <div class="setting-item"><label>${t('setOpen')}</label>
+          <input type="number" min="0" max="23" value="${config.openHour}" onchange="window.saveSetting('openHour',this.value)">
+          <div class="setting-hint">0–23</div></div>
+        <div class="setting-item"><label>${t('setClose')}</label>
+          <input type="number" min="1" max="24" value="${config.closeHour}" onchange="window.saveSetting('closeHour',this.value)">
+          <div class="setting-hint">1–24, &gt; ${t('setOpen')}</div></div>
+        <div class="setting-item"><label>${t('setDailyMachines')}</label>
+          <input type="number" min="1" max="${Math.max(1,machinesList.filter(m=>m.active).length)}" value="${config.dailyMachinesLimit}" onchange="window.saveSetting('dailyMachinesLimit',this.value)">
+          <div class="setting-hint">1–${Math.max(1,machinesList.filter(m=>m.active).length)}</div></div>
+        <div class="setting-item"><label>${t('setPerMachine')}</label>
+          <input type="number" min="30" max="1440" step="30" value="${config.perMachineDailyLimit}" onchange="window.saveSetting('perMachineDailyLimit',this.value)">
+          <div class="setting-hint">≈ ${(config.perMachineDailyLimit/60).toFixed(1)} ч</div></div>
+        <div class="setting-item"><label>${t('setWeekly')}</label>
+          <input type="number" min="30" max="10080" step="30" value="${config.weeklyLimit}" onchange="window.saveSetting('weeklyLimit',this.value)">
+          <div class="setting-hint">≈ ${(config.weeklyLimit/60).toFixed(1)} ч</div></div>
+        <div class="setting-item"><label>${t('setAdvance')}</label>
+          <input type="number" min="1" max="168" value="${config.maxAdvanceHours}" onchange="window.saveSetting('maxAdvanceHours',this.value)">
+          <div class="setting-hint">1–168 ч</div></div>
+        <div class="setting-item"><label>${t('setCleanup')}</label>
+          <input type="number" min="0" max="168" value="${config.cleanupDelayHours}" onchange="window.saveSetting('cleanupDelayHours',this.value)">
+          <div class="setting-hint">0–168 ч</div></div>
+      </div>
+      <div class="settings-actions">
+        <button class="btn-save" onclick="window.saveSettings()">💾 ${t('save')}</button>
+        <button class="btn-reset" onclick="window.resetSettings()">↩️ ${t('resetDefaults')}</button>
+      </div>
+    </div>`;
+  };
+
+  const renderList = ()=>{
+    const total=Object.keys(allowedUsers).length;
+    const filtered=buildUserList();
+    const lettersPresent=new Set(Object.values(allowedUsers).map(u=>firstLetter(u.lastName)));
+    let alpha=`<button class="alpha-btn ${usersLetter===''?'active':''}" onclick="window.usersLetterSet('')">${t('all')}</button>`;
+    RU_ALPHA.forEach(L=>{
+      const has=lettersPresent.has(L);
+      alpha+=`<button class="alpha-btn ${usersLetter===L?'active':''} ${has?'':'empty'}" ${has?`onclick="window.usersLetterSet('${L}')"`:'disabled'}>${L}</button>`;
+    });
+    let rows='';
+    if (filtered.length===0) rows=`<div class="empty-list">${total===0?t('noUsers'):t('noMatch')}</div>`;
+    else {
+      let curLetter=null;
+      filtered.forEach(u=>{
+        const L=firstLetter(u.lastName);
+        if (usersSort==='lastNameAsc' && L!==curLetter){ curLetter=L; rows+=`<div class="letter-header">${L}</div>`; }
+        const added=u.addedAt?new Date(u.addedAt).toLocaleDateString(currentLang==='ru'?'ru-RU':currentLang==='zh'?'zh-CN':'en-US'):'';
+        const nk=nameKey(u.lastName,u.firstName);
+        const reg=userRegistry[nk];
+        const bound=!!(reg&&reg.deviceId);
+        const devShort = bound ? (reg.deviceId||'').replace('dev_','').slice(0,6) : '';
+        rows+=`<div class="user-row">
+          <div><div class="user-name">${escapeHtml(u.lastName)} ${escapeHtml(u.firstName)}
+            <span class="bind-chip ${bound?'bound':'unbound'}">${bound?t('bound'):t('unbound')}${bound?` · ${t('bindTo')} ${escapeHtml(devShort)}`:''}</span></div>
+          ${added?`<div class="user-meta">${t('addedOn')} ${added}</div>`:''}</div>
+          <div class="user-actions">
+            ${bound?`<button class="btn-mini js-reset-bind" data-nk="${escapeHtml(nk)}">${t('resetBind')}</button>`:''}
+            <button class="btn-mini danger js-remove-user" data-uid="${escapeHtml(u.id)}">${t('cancel')}</button>
+          </div>
+        </div>`;
+      });
+    }
+    return `<div class="list-toolbar">
+        <div class="list-search-row">
+          <input class="list-search" type="text" placeholder="${t('search')}" value="${escapeHtml(usersSearch)}" oninput="window.usersSearchInput(this.value)">
+          <select class="list-sort" onchange="window.usersSortSet(this.value)">
+            <option value="lastNameAsc" ${usersSort==='lastNameAsc'?'selected':''}>${t('sortLasc')}</option>
+            <option value="lastNameDesc" ${usersSort==='lastNameDesc'?'selected':''}>${t('sortLdesc')}</option>
+            <option value="addedAt" ${usersSort==='addedAt'?'selected':''}>${t('sortAdded')}</option>
+          </select>
+        </div>
+        <div class="alpha-index">${alpha}</div>
+        <div class="list-stats">${t('shownOf',{shown:filtered.length,total})}</div>
+        <div class="add-user-bar">
+          <input type="text" id="newULastName" placeholder="${t('lastName')}">
+          <input type="text" id="newUFirstName" placeholder="${t('firstName')}">
+          <button class="btn-add-user" onclick="window.addAllowedUser()">${t('addNew')}</button>
+        </div>
+      </div>
+      <div class="users-scroll">${rows}</div>`;
+  };
+
+  // ===== ДЕЛЕГИРОВАНИЕ КЛИКОВ (вместо JSON в onclick) =====
+  document.addEventListener('click', (e)=>{
+    const cancel=e.target.closest('[data-cancel-key]');
+    if (cancel){ doCancel(cancel.getAttribute('data-cancel-key')); return; }
+    const rmUser=e.target.closest('[data-uid]');
+    if (rmUser){ window.removeAllowedUser(rmUser.getAttribute('data-uid')); return; }
+    const rb=e.target.closest('[data-nk]');
+    if (rb){ window.resetBind(rb.getAttribute('data-nk')); return; }
+    const dm=e.target.closest('[data-machine-id]');
+    if (dm){ window.deleteMachine(Number(dm.getAttribute('data-machine-id'))); return; }
+  });
+  // Escape закрывает модалки
+  document.addEventListener('keydown',(e)=>{ if(e.key==='Escape'){ closeModal('bookModal'); closeModal('adminLoginModal'); } });
+
+  function applyTranslations(){
+    document.getElementById('appTitle').textContent=t('title');
+    document.getElementById('appSubtitle').textContent=t('subtitle');
+    document.querySelector('.t-machines').textContent=t('machines');
+    document.querySelector('.t-schedule').textContent=t('schedule');
+    document.querySelector('.t-list').textContent=t('list');
+    document.querySelector('.t-settings').textContent=t('settings');
+    document.querySelector('.t-admin').textContent=t('admin');
+    document.querySelector('.t-startTime').textContent=t('startTime');
+    document.querySelector('.t-duration').textContent=t('duration');
+    document.querySelector('.t-lastName').textContent=t('lastName');
+    document.querySelector('.t-firstName').textContent=t('firstName');
+    document.querySelector('.t-book').textContent=t('book');
+    document.querySelector('.t-adminLogin').textContent=t('adminLogin');
+    document.querySelector('.t-password').textContent=t('password');
+    document.querySelector('.t-login').textContent=t('login');
+    document.querySelectorAll('.t-min').forEach(el=>el.textContent=t('min'));
+    render();
+  }
+  window.setLanguage=(lang)=>{ currentLang=lang; localStorage.setItem('laundry_lang',lang); applyTranslations(); };
+
+  // ===== SUBSCRIPTIONS =====
+  onValue(settingsRef,(s)=>{ const v=s.val(); if (v) config={...DEFAULT_CONFIG,...v}; render(); });
+  onValue(bookingsRef,(s)=>{ bookings=s.val()||{}; cleanupOldBookings(); render(); });
+  onValue(machineStatusRef,(s)=>{ machineStatuses=s.val()||{}; render(); });
+  onValue(allowedUsersRef,(s)=>{ allowedUsers=s.val()||{}; render(); });
+  onValue(userRegistryRef,(s)=>{ userRegistry=s.val()||{}; render(); });
+  onValue(machinesRef,(s)=>{
+    const v=s.val();
+    if (!v || Object.keys(v).length===0){
+      // миграция: создаём дефолтные 5 машинок один раз
+      if (!machinesLoaded){
+        machinesLoaded=true;
+        const def={};
+        for (let i=1;i<=5;i++) def[i]={name:`Стиралка №${i}`, floor:`${Math.ceil(i/2)} этаж`, active:true};
+        set(machinesRef, def).catch(e=>console.error(e));
+      }
+      return;
+    }
+    machinesList=Object.entries(v).map(([id,m])=>({id:Number(id),name:m.name||'',floor:m.floor||'',active:m.active!==false}));
+    machinesList.sort((a,b)=>a.id-b.id);
+    machinesLoaded=true;
+    render();
+  });
+
+  setInterval(cleanupOldBookings,5*60*1000);
+  setInterval(render,60000);
+  applyAdminVisibility();
+  applyTranslations();
+</script>
+</body>
+</html>
